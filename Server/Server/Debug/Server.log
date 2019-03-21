@@ -1,0 +1,7 @@
+﻿  tcpServer.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+d:\sources\saas\server\server\tcpserver.cpp(4): error C2512: 'boost::asio::basic_socket_acceptor<boost::asio::ip::tcp>': 사용할 수 있는 적절한 기본 생성자가 없습니다.
+  d:\download\vcpkg\vcpkg\installed\x86-windows\include\boost\asio\ip\tcp.hpp(86): note: 'boost::asio::basic_socket_acceptor<boost::asio::ip::tcp>' 선언을 참조하십시오.
