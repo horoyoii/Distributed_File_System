@@ -7,11 +7,12 @@ void operate() {
 			cout << "서버 시작" << endl;
 
 			// 현재 접속한 모든 사용자.
+			/*
 			cout << "현재 접속자 수 : " << userCount << endl;
 			for (int i = 0; i < userCount; i++) {
 				cout << "사용자 이름 : " << userList[i] << endl;
 			}
-
+			*/
 			// 현재 서버의 폴더 정보 출력
 			cout << "디렉토리 정보" << endl;
 			boost::filesystem::directory_iterator end;
@@ -19,7 +20,9 @@ void operate() {
 				cout << iterator->path().leaf() << endl;
 			}
 
-			system("pause");
+			tcpServer *myTcpServer = new tcpServer(1000);
+			delete myTcpServer;
+			//system("pause");
 
 		}
 

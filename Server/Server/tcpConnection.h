@@ -14,9 +14,14 @@ private:
 	std::ofstream outputFile;
 	size_t fileSize;
 
+public:
 
-
-
+	tcpConnection(boost::asio::io_context& io_context);
+	void start(void);
+	boost::asio::ip::tcp::socket& socket();
+	void handleError(const std::string& functionName, const boost::system::error_code& err);
+	void handleReadRequest(const boost::system::error_code& err, std::size_t bytesTransferred);
+	void handleReadFileContent(const boost::system::error_code& err, std::size_t bytesTransferred);
 };
 
 
