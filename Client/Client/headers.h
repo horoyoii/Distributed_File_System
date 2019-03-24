@@ -7,7 +7,8 @@
 #include<boost/bind.hpp>
 #include<boost/array.hpp>
 #include"FileTcpClient.h"
-
+#include"userTcpClient.h"
 
 using namespace std;
+using namespace boost::asio::ip;
 using namespace boost::asio;

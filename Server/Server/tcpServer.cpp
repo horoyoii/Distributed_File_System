@@ -1,7 +1,7 @@
 #include"tcpServer.h"
 
 
-unsigned short port = 1000;
+unsigned short port = 21;
 unsigned short userCount = 0;
 std::array<std::string, 50> userList;
 
@@ -11,9 +11,12 @@ tcpServer::tcpServer(unsigned short port)
 	cout << "대기 중 입니다." << endl;
 
 	// 지정된 포트로 새로운 연결을 accept 처리한다.
+	cout << "D : accept 대기중 1 " << endl;
 	ptrTcpConnection newConnection(new tcpConnection(io_context));
+	cout << "D : accept 대기중 2 " << endl;
 	acceptor.async_accept(newConnection->socket(),
 	boost::bind(&tcpServer::handleAccept, this, newConnection, boost::asio::placeholders::error));
+	cout << "D : accept 대기중 3 " << endl;
 	io_context.run();
 
 
@@ -26,6 +29,9 @@ void tcpServer::handleAccept(ptrTcpConnection currentConnection, const boost::sy
 	cout << __FUNCTION__ << " " << e << " " << e.message() << endl;
 	if (!e) {
 		currentConnection->start();
+	}
+	else {
+		cout << "awefawefawef" << endl;
 	}
 }
 
@@ -48,19 +54,24 @@ tcpConnection::tcpConnection(boost::asio::io_context& io_context)
 
 //클라이언트의 요청을 처리하기 시작한다.
 void tcpConnection::start() {
+	cout << "start called" << endl;
 	boost::asio::async_read_until(mySocket, requestBuf, "\n\n",
 		boost::bind(&tcpConnection::handleReadRequest,
 			shared_from_this(), boost::asio::placeholders::error,
 			boost::asio::placeholders::bytes_transferred));
 
+	cout << "D : read 끗" << endl;
+
 }
 
 
 void tcpConnection::handleReadRequest(const boost::system::error_code& err, std::size_t bytesTransferred) {
+	cout << "D : handleReadRequest called" << endl;
 	if (err) {
+		cout << "D : Error in handleReadRequest" << endl;
 		return handleError(__FUNCTION__, err);
 	}
-
+	
 	cout << " == 요청 정보  from client == " << endl;
 	cout << __FUNCTION__ << endl;
 	cout << "bytesTransferred : " << bytesTransferred << endl;

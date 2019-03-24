@@ -3,13 +3,21 @@
 
 
 void sendFile();
+void sendUser(string userName, string userInfo);
+
 
 
 
 int main(void) {
 	
 	// 1) User Authentification ===================================
-
+	string userName;
+	string userInfo;
+	cout << "사용자 이름 입력 : ";
+	getline(std::cin, userName, '\n');
+	cout << "사용자 정보 입력 : ";
+	getline(std::cin, userInfo, '\n');
+	sendUser(userName, userInfo);
 
 	// 2) File Trnasfer ===================================
 	cout << "============= send the File =============" << endl;
@@ -21,6 +29,28 @@ int main(void) {
 	system("pause");
 	return 0;
 }
+
+
+
+
+
+void sendUser(string userName, string userInfo) {
+	try {
+		cout << "== 사용자 정보 전송 ==" << endl;
+		string *IP = new string("127.0.0.1:1000");
+		boost::asio::io_context io_context;
+		userTcpClient(io_context, *IP, userName, userInfo);
+		io_context.run();
+
+		cout << " == 사용자 정보 전송 성공 == " << endl;
+
+	}
+	catch (exception& e) {
+		cout << "== 전송 오류 ==" << endl;
+		cerr << e.what() << endl;
+	}
+}
+
 
 
 void sendFile() {
