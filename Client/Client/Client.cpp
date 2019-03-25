@@ -37,12 +37,28 @@ int main(void) {
 void sendUser(string userName, string userInfo) {
 	try {
 		cout << "== 사용자 정보 전송 ==" << endl;
+		// 1) IP & PORT
+		/*
 		string *IP = new string("127.0.0.1:1000");
 		boost::asio::io_context io_context;
 		userTcpClient(io_context, *IP, userName, userInfo);
-		io_context.run();
 
-		cout << " == 사용자 정보 전송 성공 == " << endl;
+		io_context.run();
+		*/
+		// 1) IP & PORT
+		string *IP = new string("127.0.0.1:1000");
+
+
+		// 2) File Path
+		string FILE_PATH;
+		getline(cin, FILE_PATH, '\n');
+
+
+		// 3) 파일 전송 객체 생성
+		io_context io_con;
+		MyUserTcpClient client(io_con, *IP, FILE_PATH);
+
+		io_con.run();
 
 	}
 	catch (exception& e) {

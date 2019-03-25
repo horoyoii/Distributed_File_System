@@ -17,6 +17,7 @@ tcpServer::tcpServer(unsigned short port)
 	acceptor.async_accept(newConnection->socket(),
 	boost::bind(&tcpServer::handleAccept, this, newConnection, boost::asio::placeholders::error));
 	cout << "D : accept 대기중 3 " << endl;
+
 	io_context.run();
 
 
@@ -48,7 +49,7 @@ tcpServer::~tcpServer() {
 
 tcpConnection::tcpConnection(boost::asio::io_context& io_context)
 	:mySocket(io_context) {
-
+	cout << "tcpConnection 생성자 호출" << endl;
 }
 
 

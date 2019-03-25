@@ -13,6 +13,6 @@ public:
 	void handleConnect(const boost::system::error_code& err, tcp::resolver::iterator myIterator);
 	void handleWriteUser(const boost::system::error_code& err);
 	userTcpClient(boost::asio::io_context& io_context,
-		const std::string& server, std::string userName, std::string userInfo);
+		const std::string& server, std::string& userName, std::string& userInfo);
 
 };

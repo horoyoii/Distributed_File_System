@@ -4,6 +4,7 @@ using namespace std;
 
 void userTcpClient::handleResolve(const boost::system::error_code& err, tcp::resolver::iterator myIterator) {
 	cout << "D : handleResolve 진입" << endl;
+
 	if (!err) {
 		cout << "D : not 오류 in" << __FUNCTION__ << endl;
 		// 넘겨받은 endpoint로 연결시도
@@ -60,15 +61,16 @@ void userTcpClient::handleWriteUser(const boost::system::error_code& err) {
 
 
 userTcpClient::userTcpClient(boost::asio::io_context& io_context,
-	const std::string& server, std::string userName, std::string userInfo)
+	const std::string& server, std::string& userName, std::string& userInfo)
 :resolver(io_context), socket(io_context){
 
 	size_t pos = server.find(':');
 	if (pos == std::string::npos)
 		return;
-	string portString = server.substr(pos + 1);
+	string Port = server.substr(pos + 1);
 	string serverIP = server.substr(0, pos);
-	cout << serverIP << ":" << portString << endl;
+	cout << serverIP << ":" << Port << endl;
+
 	// 서버에 사용자 이름과 정보 전송
 	// ** 보내고자하는 데이터를 io stream으로 만들어서 (ostream으로 보내서 istream으로 받는다.)
 	cout << "D :  userTcpClient Called " << endl;
@@ -80,7 +82,7 @@ userTcpClient::userTcpClient(boost::asio::io_context& io_context,
 
 
 	// 비동기적 resolving
-	tcp::resolver::query query(serverIP, portString);
+	tcp::resolver::query query(serverIP, Port);
 	resolver.async_resolve(query, boost::bind(&userTcpClient::handleResolve, this,
 		boost::asio::placeholders::error, boost::asio::placeholders::iterator));
 

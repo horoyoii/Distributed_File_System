@@ -32,7 +32,8 @@ FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::str
 
 	// procedure : resolving -> binding -> connecting -> file sending
 	boost::asio::ip::tcp::resolver::query query(serverIP, Port);
-	resolver.async_resolve(query, boost::bind(&FileTcpClient::handleResolve, this, boost::asio::placeholders::error, boost::asio::placeholders::iterator));
+	resolver.async_resolve(query, boost::bind(&FileTcpClient::handleResolve, this, 
+		boost::asio::placeholders::error, boost::asio::placeholders::iterator));
 
 
 
@@ -62,7 +63,8 @@ void FileTcpClient::handleConnect(const boost::system::error_code& err, tcp::res
 
 		cout << "파일 전송" << endl;
 		async_write(socket, request,
-			boost::bind(&FileTcpClient::handleWrite, this, boost::asio::placeholders::error));
+			boost::bind(&FileTcpClient::handleWrite, this, 
+				boost::asio::placeholders::error));
 
 	}
 	else {

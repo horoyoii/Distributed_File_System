@@ -117,11 +117,13 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="FileTcpClient.cpp" />
+    <ClCompile Include="MyUserTcpClient.cpp" />
     <ClCompile Include="userTcpClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileTcpClient.h" />
     <ClInclude Include="headers.h" />
+    <ClInclude Include="MyUserTcpClient.h" />
     <ClInclude Include="userTcpClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
