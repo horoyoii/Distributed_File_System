@@ -37,6 +37,7 @@ void tcpServer::handleAccept(ptrTcpConnection currentConnection, const boost::sy
 }
 
 tcpServer::~tcpServer() {
+	// 로그아웃 : 클라이언트에서 접속 종료 시 호출된다.
 	io_context.stop();
 }
 
@@ -65,6 +66,9 @@ void tcpConnection::start() {
 
 }
 
+void tcpConnection::handleResponse(const boost::system::error_code &err) {
+	cout << "내용을 보냈습니다." << endl;
+}
 
 void tcpConnection::handleReadRequest(const boost::system::error_code& err, std::size_t bytesTransferred) {
 	cout << "D : handleReadRequest called" << endl;
@@ -93,6 +97,21 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		cout << "이름 : " << userName << "  정보 : " << userInfo << endl;
 
 		userList[userCount++] = userName;
+	
+		//TODO: reply 보내기 ...? 
+		
+		boost::asio::streambuf response;
+		std::ostream responseStream(&response);
+
+		responseStream << "enter" << "\n" << "answer" << "\n" << "Good" << "\n\n";
+		cout << "응답  크기 : " << response.size() << endl;
+
+
+		boost::asio::async_write(mySocket, response, 
+			boost::bind(&tcpConnection::handleResponse, shared_from_this(),
+				boost::asio::placeholders::error));
+	
+	
 	}
 
 	if (instruction == "fileSend") {
@@ -174,3 +193,5 @@ void tcpConnection::handleError(const std::string& functionName, const boost::sy
 	cout << __FUNCTION__ << "Error : " << functionName << "\n Why? " << err << " " << err.message() << endl;
 
 }
+
+

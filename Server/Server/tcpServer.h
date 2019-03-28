@@ -19,6 +19,8 @@ public:
 	void handleError(const std::string& functionName, const boost::system::error_code& err);
 	void handleReadRequest(const boost::system::error_code& err, std::size_t bytesTransferred);
 	void handleReadFileContent(const boost::system::error_code& err, std::size_t bytesTransferred);
+	void handleResponse(const boost::system::error_code &err);
+
 };
 
 

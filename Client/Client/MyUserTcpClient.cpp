@@ -55,10 +55,16 @@ void MyUserTcpClient::handleConnect(const boost::system::error_code& err, tcp::r
 	cout << "D : handleConnect called in MyUser" << endl;
 	if (!err) {
 
+		// 1) 유저 정보 전송하고
 		cout << "파일 전송" << endl;
-		async_write(socket, request,
+
+		    // async_write() : 버퍼의 내용물을 전부 전송하면 callback함수를 호출한다.(여기서는 handlewrite)
+		async_write(socket, request, 
 			boost::bind(&MyUserTcpClient::handleWrite, this,
 				boost::asio::placeholders::error));
+
+		// 2) 결과값을 받고
+		
 
 	}
 	else {
@@ -69,13 +75,25 @@ void MyUserTcpClient::handleConnect(const boost::system::error_code& err, tcp::r
 
 
 void MyUserTcpClient::handleWrite(const boost::system::error_code &err) {
-	// 실제로 파일을 전송한다.
+	// call back func이다. == 전부 전송하면 이 함수가 호출된다. 그렇다면 여기서 read를 쓰면 될거시다.ㅇ/??
 	cout << "D : handleWrite called in MyUser" << endl;
 	if (!err) {
+		cout << "read from server" << endl;
+		boost::asio::streambuf requestBuf;
+		boost::asio::async_read_until(socket, requestBuf, "\n\n",
+			boost::bind(&MyUserTcpClient::TestCallback,
+				this, boost::asio::placeholders::error,
+				boost::asio::placeholders::bytes_transferred));
+
+
 
 	}
 	else {
 		cout << "전송 오류" << endl;
 		cout << "error : " << err.message() << endl;
 	}
+}
+
+void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::size_t bytesTransferred) {
+	cout << "내용을 받았습니다. from server." << endl;
 }

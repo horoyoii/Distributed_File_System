@@ -14,12 +14,13 @@ void operate() {
 			}
 			*/
 			// 현재 서버의 폴더 정보 출력
+			/*
 			cout << "디렉토리 정보" << endl;
 			boost::filesystem::directory_iterator end;
 			for (boost::filesystem::directory_iterator iterator(boost::filesystem::current_path()); iterator != end; iterator++) {
 				cout << iterator->path().leaf() << endl;
 			}
-
+			*/
 			tcpServer *myTcpServer = new tcpServer(1000);
 			delete myTcpServer;
 			//system("pause");

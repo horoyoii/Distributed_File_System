@@ -16,4 +16,5 @@ public:
 	void handleResolve(const boost::system::error_code& err, tcp::resolver::iterator  myIterator);
 	void handleConnect(const boost::system::error_code& err, tcp::resolver::iterator myIterator);
 	void handleWrite(const boost::system::error_code &err);
+	void TestCallback(const boost::system::error_code& err, std::size_t bytesTransferred);
 };
