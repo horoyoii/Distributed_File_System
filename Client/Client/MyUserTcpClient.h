@@ -9,12 +9,15 @@ private:
 	boost::asio::ip::tcp::socket socket;
 	std::ifstream sourceFile; // input file stream in c++
 	boost::asio::streambuf request;
+	boost::asio::streambuf ResponseBuf;
 	boost::array<char, 8192> buf; // 한번에 보내는 용량 8192 byte
+	bool accResult;
 
 public:
-	MyUserTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH);
+	MyUserTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& userName, const std::string& userPw);
 	void handleResolve(const boost::system::error_code& err, tcp::resolver::iterator  myIterator);
 	void handleConnect(const boost::system::error_code& err, tcp::resolver::iterator myIterator);
 	void handleWrite(const boost::system::error_code &err);
 	void TestCallback(const boost::system::error_code& err, std::size_t bytesTransferred);
+	bool getAccResult();
 };

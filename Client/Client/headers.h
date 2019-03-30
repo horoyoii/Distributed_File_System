@@ -7,7 +7,6 @@
 #include<boost/bind.hpp>
 #include<boost/array.hpp>
 #include"FileTcpClient.h"
-#include"userTcpClient.h"
 #include"MyUserTcpClient.h"
 
 using namespace std;

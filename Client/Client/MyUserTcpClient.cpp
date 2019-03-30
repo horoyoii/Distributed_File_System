@@ -1,7 +1,7 @@
 #include "MyUserTcpClient.h"
 
 
-MyUserTcpClient::MyUserTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH)
+MyUserTcpClient::MyUserTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& userName, const std::string& userPW)
 	:resolver(io_context), socket(io_context) {
 
 	size_t pos = server.find(':');
@@ -12,14 +12,12 @@ MyUserTcpClient::MyUserTcpClient(boost::asio::io_context& io_context, const std:
 	string serverIP = server.substr(0, pos);
 
 	
-	string body = "bodyss";
-	
 
 
 	// 먼저 서버에 파일의 경로와 파일의 크기를 전송
 	cout << "파일 정보 전송" << endl;
 	std::ostream requestStream(&request);
-	requestStream << "enter" << "\n" << FILE_PATH << "\n" << body << "\n\n";
+	requestStream << "enter" << "\n" << userName << "\n" << userPW << "\n\n";
 
 	cout << "메타데이터 요청 크기 : " << request.size() << endl;
 
@@ -63,7 +61,6 @@ void MyUserTcpClient::handleConnect(const boost::system::error_code& err, tcp::r
 			boost::bind(&MyUserTcpClient::handleWrite, this,
 				boost::asio::placeholders::error));
 
-		// 2) 결과값을 받고
 		
 
 	}
@@ -75,12 +72,8 @@ void MyUserTcpClient::handleConnect(const boost::system::error_code& err, tcp::r
 
 
 void MyUserTcpClient::handleWrite(const boost::system::error_code &err) {
-	// call back func이다. == 전부 전송하면 이 함수가 호출된다. 그렇다면 여기서 read를 쓰면 될거시다.ㅇ/??
-	cout << "D : handleWrite called in MyUser" << endl;
 	if (!err) {
-		cout << "read from server" << endl;
-		boost::asio::streambuf requestBuf;
-		boost::asio::async_read_until(socket, requestBuf, "\n\n",
+		boost::asio::async_read_until(socket, ResponseBuf, "\n\n",
 			boost::bind(&MyUserTcpClient::TestCallback,
 				this, boost::asio::placeholders::error,
 				boost::asio::placeholders::bytes_transferred));
@@ -95,5 +88,20 @@ void MyUserTcpClient::handleWrite(const boost::system::error_code &err) {
 }
 
 void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::size_t bytesTransferred) {
-	cout << "내용을 받았습니다. from server." << endl;
+
+	std::istream requestStream(&ResponseBuf);
+
+	// 요청 정보 처리 : 헤더 처리 !!!!!!!!!!!!!!!!!
+	string AccessResult;
+	requestStream >> AccessResult;
+	cout << "내용을 받았습니다. from server  : " << AccessResult << endl;
+	if (AccessResult == "true")
+		accResult = true;
+	else
+		accResult = false;
+}
+
+bool MyUserTcpClient::getAccResult()
+{
+	return accResult;
 }

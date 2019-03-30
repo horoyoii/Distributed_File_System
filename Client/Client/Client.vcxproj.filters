@@ -21,10 +21,10 @@
     <ClCompile Include="FileTcpClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="userTcpClient.cpp">
+    <ClCompile Include="MyUserTcpClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MyUserTcpClient.cpp">
+    <ClCompile Include="Handler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,10 +35,10 @@
     <ClInclude Include="headers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="userTcpClient.h">
+    <ClInclude Include="MyUserTcpClient.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MyUserTcpClient.h">
+    <ClInclude Include="Handler.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
