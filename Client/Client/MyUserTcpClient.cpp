@@ -94,9 +94,21 @@ void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::si
 	// 요청 정보 처리 : 헤더 처리 !!!!!!!!!!!!!!!!!
 	string AccessResult;
 	requestStream >> AccessResult;
+	string responseTOKEN;
+	int cnt;
 	cout << "내용을 받았습니다. from server  : " << AccessResult << endl;
-	if (AccessResult == "true")
+	
+	if (AccessResult == "true") {
 		accResult = true;
+		requestStream >> responseTOKEN;
+		cnt = atoi(responseTOKEN.c_str());
+		cout << "== 나의 디렉토리 정보 ==" << endl;
+		for(int i=1;i<=cnt;i++) {
+			requestStream >> responseTOKEN;
+			cout << i<<" : "<<responseTOKEN << endl;
+		}
+	
+	}
 	else
 		accResult = false;
 }

@@ -6,6 +6,7 @@
 #include<boost/asio.hpp>
 #include<boost/bind.hpp>
 #include<boost/array.hpp>
+#include <boost/filesystem.hpp>
 #include"FileTcpClient.h"
 #include"MyUserTcpClient.h"
 

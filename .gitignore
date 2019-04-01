@@ -1,0 +1,7 @@
+
+Client/.vs/Client/v15/ipch/AutoPCH/12bed8a59b7a7d10/CLIENT.ipch
+Client/.vs/Client/v15/ipch/AutoPCH/35cd104d634852a9/HANDLER.ipch
+Client/.vs/Client/v15/ipch/AutoPCH/3734c7171a8f16b4/OPERATIONS.ipch
+Client/.vs/Client/v15/ipch/AutoPCH/62fb5598ddec8078/CLIENT.ipch
+*.ipch
+*.db

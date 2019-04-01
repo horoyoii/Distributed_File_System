@@ -54,8 +54,21 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		std::ostream requestStream(&AccessResultRespon);
 
 		// 비밀번호 대조
-		if (userPW == "12345")
-			requestStream << "true" << "\n\n";
+		if (userPW == "12345") {
+			requestStream << "true" << "\n";
+			boost::filesystem::directory_iterator end;
+			int cnt = 0;
+			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
+				cnt++;
+			}
+			requestStream << cnt << "\n";
+
+			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
+				requestStream << iterator->path().leaf() << "\n";
+			}
+			requestStream << "\n\n";
+		
+		}
 		else
 			requestStream << "false" << "\n\n";
 

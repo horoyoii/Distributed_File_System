@@ -17,13 +17,13 @@ void operate() {
 			}
 			*/
 			// 현재 서버의 폴더 정보 출력
-			/*
-			cout << "디렉토리 정보" << endl;
+			//for (boost::filesystem::directory_iterator iterator(boost::filesystem::current_path()); iterator != end; iterator++) {
+			//cout << "디렉토리 정보" << endl;
 			boost::filesystem::directory_iterator end;
-			for (boost::filesystem::directory_iterator iterator(boost::filesystem::current_path()); iterator != end; iterator++) {
+			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
 				cout << iterator->path().leaf() << endl;
 			}
-			*/
+			
 			tcpServer *myTcpServer = new tcpServer(1000);
 			delete myTcpServer;
 		}
