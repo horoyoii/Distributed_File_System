@@ -11,8 +11,6 @@ MyUserTcpClient::MyUserTcpClient(boost::asio::io_context& io_context, const std:
 	string Port = server.substr(pos + 1);
 	string serverIP = server.substr(0, pos);
 
-	
-
 
 	// 먼저 서버에 파일의 경로와 파일의 크기를 전송
 	cout << "파일 정보 전송" << endl;

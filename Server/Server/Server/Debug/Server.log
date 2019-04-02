@@ -1,13 +1,6 @@
-﻿  main.cpp
+﻿  tcpConnection.cpp
   Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
   - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
   - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
   Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
-  tcpConnection.cpp
-  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
-  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
-  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
-  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
-  코드를 생성하고 있습니다...
-  LINK : D:\Sources\DFS\Server\Server\Debug\Server.exe을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
   Server.vcxproj -> D:\Sources\DFS\Server\Server\Debug\Server.exe

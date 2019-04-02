@@ -18,15 +18,23 @@ FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::str
 		std::cout << "file open error" << endl;
 		return;
 	}
+
 	size_t fileSize = sourceFile.tellg(); // Returns the position of the current character in the input stream.
 	cout << "현재 파일 크기 :  " << fileSize <<"bytes"<< endl;
 	sourceFile.seekg(0); // Set position in input sequence
+
+	// 가장 최근 수정 일자
+	//string latest_date;
+	boost::filesystem::path p{ FILE_PATH };
+	std::time_t t = boost::filesystem::last_write_time(p);
+	//std::cout << std::ctime(&t) << '\n';
+
 
 
 	// 먼저 서버에 파일의 경로와 파일의 크기를 전송
 	cout << "파일 정보 전송" << endl;
 	std::ostream requestStream(&request);
-	requestStream << "fileSend" << "\n" << FILE_PATH << "\n" << fileSize << "\n\n";
+	requestStream << "fileSend" << "\n" << FILE_PATH << "\n" << fileSize << "\n"<< std::ctime(&t) <<"\n\n";
 
 	cout << "메타데이터 요청 크기 : " << request.size() << endl;
 

@@ -116,15 +116,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="DataFromServer.cpp" />
     <ClCompile Include="FileTcpClient.cpp" />
     <ClCompile Include="Handler.cpp" />
+    <ClCompile Include="ListTcpClient.cpp" />
     <ClCompile Include="MyUserTcpClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileTcpClient.h" />
     <ClInclude Include="Handler.h" />
     <ClInclude Include="headers.h" />
+    <ClInclude Include="ListTcpClient.h" />
     <ClInclude Include="MyUserTcpClient.h" />
+    <ClInclude Include="DataFromServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

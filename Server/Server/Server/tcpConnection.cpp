@@ -80,17 +80,25 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 
 	if (instruction == "fileSend") {
 		std::istream requestStream(&requestBuf);
-		string filePath;
+		string filePath, LatestUpdateTime;
 		string temp;
 
 		requestStream >> filePath;
 		getline(requestStream, temp, '\n');
 		requestStream >> fileSize;
-		requestStream.read(buf.c_array(), 2);
+		getline(requestStream, temp, '\n');
+		//requestStream >> LatestUpdateTime;
+		getline(requestStream, LatestUpdateTime, '\n');
+		requestStream.read(buf.c_array(), 1); // header의 끝은 '\n\n' 였다. 그래서 '\n'을 한번 더 빼준다.
 
 		// 파일 정보 출력
 		cout << " == 파일 정보 ==" << endl;
 		cout << filePath << " 크기 : " << fileSize << "bytes" << endl;
+		cout << "update time : " << LatestUpdateTime << endl;
+
+		//TODO : 파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
+	
+
 
 		// 파일명 추출
 		size_t pos = filePath.find_last_of('\\');
@@ -124,6 +132,13 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 				boost::asio::placeholders::bytes_transferred));
 
 	}
+
+	if (instruction == "getDataList") {
+		// DB에서 정보를 가져와 전송한다리
+
+
+	}
+
 }
 
 
