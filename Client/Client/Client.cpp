@@ -17,7 +17,7 @@ int main(void) {
 	// 지정된 디렉토리의 파일 정보 get 
 
 	// 일정 interval마다 해당 디렉토리를 스캐닝
-	handler->sendFile("path");
+	//handler->sendFile("path");
 	//handler->StartScan();
 	
 		

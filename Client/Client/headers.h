@@ -4,6 +4,7 @@
 #include<fstream>
 #include<sstream>
 #include<string>
+#include<map>
 #include<boost/asio.hpp>
 #include<boost/bind.hpp>
 #include<boost/array.hpp>

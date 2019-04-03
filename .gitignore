@@ -5,3 +5,7 @@ Client/.vs/Client/v15/ipch/AutoPCH/3734c7171a8f16b4/OPERATIONS.ipch
 Client/.vs/Client/v15/ipch/AutoPCH/62fb5598ddec8078/CLIENT.ipch
 *.ipch
 *.db
+Client/.vs/Client/v15/Browse.VC.opendb
+*.idb
+*.opendb
+*.opendb

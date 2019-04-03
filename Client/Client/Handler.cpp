@@ -13,6 +13,9 @@ bool Handler::TryLogin(){
 	getline(std::cin, userPW, '\n');
 	sendUser(userName, userPW);
 
+	if (accResult) {
+
+	}
 
 	return accResult;
 }

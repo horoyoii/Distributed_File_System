@@ -16,6 +16,10 @@ string DataFromServer::getDateInfo(string path)
 	return string();
 }
 
-void DataFromServer::setDateInfo(string path, time_t time)
-{
+void DataFromServer::setDateInfo(string path, string time){
+	FileData.insert(make_pair(path, time));
+}
+
+void DataFromServer::showAllData(){
+
 }
