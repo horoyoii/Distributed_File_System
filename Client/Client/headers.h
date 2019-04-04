@@ -11,6 +11,7 @@
 #include <boost/filesystem.hpp>
 #include"FileTcpClient.h"
 #include"MyUserTcpClient.h"
+//#include"DataFromServer.h"
 
 using namespace std;
 using namespace boost::asio::ip;

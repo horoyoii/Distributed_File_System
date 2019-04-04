@@ -5,15 +5,21 @@ DataFromServer::DataFromServer(){
 }
 
 void DataFromServer::Init(){
-	// 서버에서 정보받아오기
+	
 	
 
 
 }
 
-string DataFromServer::getDateInfo(string path)
-{
-	return string();
+// key 값인 파일명은  \"파일명\" 으로 저장되어있다.
+string DataFromServer::getDateInfo(string path){
+	if (FileData.find("\""+path+ "\"") == FileData.end()) { // not found
+		return "none";
+	}
+	else {
+		return "ok";
+	}
+
 }
 
 void DataFromServer::setDateInfo(string path, string time){
@@ -21,5 +27,7 @@ void DataFromServer::setDateInfo(string path, string time){
 }
 
 void DataFromServer::showAllData(){
-
+	for (auto it = FileData.begin(); it != FileData.end(); ++it) {
+		cout << "key : " << it->first << " // " << it->second << endl;
+	}
 }

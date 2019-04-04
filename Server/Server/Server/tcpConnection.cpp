@@ -63,6 +63,7 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 			}
 			requestStream << cnt << "\n";
 
+			// 유저의 파일 정보들을 클라이언트로 보내준다.
 			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
 				requestStream << iterator->path().leaf() << "\n";
 			}

@@ -17,6 +17,9 @@ public:
 	void sendFile(string file_path);
 	void StartScan();
 	void Scan();
-	void getFileListFromServer();
+
+	void ShowAllInfo() { // 테스트함수
+		dataFromServer->showAllData();
+	}
 
 };

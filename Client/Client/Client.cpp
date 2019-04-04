@@ -31,9 +31,14 @@ int main(void) {
 		cout << "인증 성공" << endl;
 
 
+		// 1) 스캔 시작하기 
+		handler->StartScan();
+
 		// 2) File Trnasfer ===================================
 		cout << "============= send the File =============" << endl;
+		
 		//sendFile();
+		handler->ShowAllInfo();
 	}
 	else {
 		cout << "인증 실패" << endl;

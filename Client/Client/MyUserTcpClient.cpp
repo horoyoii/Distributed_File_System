@@ -1,8 +1,11 @@
 #include "MyUserTcpClient.h"
 
 
-MyUserTcpClient::MyUserTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& userName, const std::string& userPW)
+
+MyUserTcpClient::MyUserTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& userName, const std::string& userPW, DataFromServer *dataFromServer)
 	:resolver(io_context), socket(io_context) {
+
+	this->dataFromServer = dataFromServer;
 
 	size_t pos = server.find(':');
 	if (pos == string::npos) {
@@ -99,11 +102,15 @@ void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::si
 	if (AccessResult == "true") {
 		accResult = true;
 		requestStream >> responseTOKEN;
-		cnt = atoi(responseTOKEN.c_str());
+		cnt = atoi(responseTOKEN.c_str()); // 총몇개인지 우선 알아낸다.
+
+		// 받아온 정보를 따로 저장한ㄷ.
 		cout << "== 나의 디렉토리 정보 ==" << endl;
 		for(int i=1;i<=cnt;i++) {
 			requestStream >> responseTOKEN;
 			cout << i<<" : "<<responseTOKEN << endl;
+
+			dataFromServer->setDateInfo(responseTOKEN, "hee");
 		}
 	
 	}
