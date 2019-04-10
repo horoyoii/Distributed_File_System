@@ -122,6 +122,45 @@ void Handler::Scan() {
 
 }
 
+void Handler::SendAllFiles(){
+
+	boost::filesystem::directory_iterator end;
+	int cnt = 0;
+
+
+	// Handler::dataFromServer 의 정보와 스캔된 현재 디렉토리의 파일 정보를 비교하여 
+	// 업로드할지를 판단한다.
+
+	dataFromServer->showAllData();
+
+
+	cout << " == 모든 파일 보내기 == " << endl;
+	for (boost::filesystem::directory_iterator iterator("C:\\Users\\user\\Desktop\\place"); iterator != end; iterator++) {
+		cout << iterator->path().leaf() << "\n";
+		string pathh = "C:\\Users\\user\\Desktop\\place\\";
+		pathh += iterator->path().leaf().string();
+		boost::filesystem::path p{ pathh };
+		std::time_t t = boost::filesystem::last_write_time(p);
+
+
+		// 파일명만 추출
+		string fileName;
+		size_t pos = pathh.find_last_of('\\');
+		if (pos != string::npos) {
+			fileName = pathh.substr(pos + 1);
+			cout << "파일명 추출 : " << fileName << endl;
+		}
+
+		// 비교 수행 후 update 되었다면 FileTcpClilent 수행
+		sendFile(pathh);
+		
+	}
+	cout << " =======================================" << endl;
+
+
+
+}
+
 
 
 void Handler::sendFile(string file_path) {

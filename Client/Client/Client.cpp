@@ -30,6 +30,10 @@ int main(void) {
 	if (handler->TryLogin()) {
 		cout << "인증 성공" << endl;
 
+		// 0) 모든 파일 보내기 
+		handler->SendAllFiles();
+
+		system("pause");
 
 		// 1) 스캔 시작하기 
 		handler->StartScan();

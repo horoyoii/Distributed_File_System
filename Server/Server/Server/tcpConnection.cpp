@@ -1,7 +1,12 @@
 #include"tcpConnection.h"
+#include"DataBaseServ.h"
 
 
 using namespace std;
+
+
+DataBaseServ DemoGlobalDB;
+
 
 tcpConnection::tcpConnection(boost::asio::io_context& io_context)
 	:mySocket(io_context) {
@@ -80,6 +85,7 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 	}
 
 	if (instruction == "fileSend") {
+		cout << "파일을 다운받는 중 from Server" << endl;
 		std::istream requestStream(&requestBuf);
 		string filePath, LatestUpdateTime;
 		string temp;
@@ -98,7 +104,9 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		cout << "update time : " << LatestUpdateTime << endl;
 
 		//TODO : 파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
-	
+		DemoGlobalDB.INSERT(filePath, "Size", filePath, LatestUpdateTime);
+		DemoGlobalDB.SHOWALL();
+
 
 
 		// 파일명 추출

@@ -115,11 +115,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DataBaseServ.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="tcpConnection.cpp" />
     <ClCompile Include="tcpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DataBaseServ.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="tcpConnection.h" />
     <ClInclude Include="tcpServer.h" />
