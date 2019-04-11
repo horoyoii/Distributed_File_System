@@ -61,23 +61,30 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		// 비밀번호 대조
 		if (userPW == "12345") {
 			requestStream << "true" << "\n";
+
+			/*
 			boost::filesystem::directory_iterator end;
 			int cnt = 0;
 			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
 				cnt++;
 			}
-			requestStream << cnt << "\n";
+			*/
+			requestStream << DemoGlobalDB.HowManyItem() << "\n";
 
 			// 유저의 파일 정보들을 클라이언트로 보내준다.
+			/*
 			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
 				requestStream << iterator->path().leaf() << "\n";
 			}
+			*/
+			DemoGlobalDB.getAllItemInfo(requestStream);
 			requestStream << "\n\n";
-		
 		}
 		else
 			requestStream << "false" << "\n\n";
 
+
+		// 성공 시 유저의 서버 디렉토리 정보를 보내준다.
 		boost::asio::async_write(mySocket, AccessResultRespon,
 			boost::bind(&tcpConnection::handleWrite, shared_from_this(),
 				boost::asio::placeholders::error));
@@ -103,11 +110,6 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		cout << filePath << " 크기 : " << fileSize << "bytes" << endl;
 		cout << "update time : " << LatestUpdateTime << endl;
 
-		//TODO : 파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
-		DemoGlobalDB.INSERT(filePath, "Size", filePath, LatestUpdateTime);
-		DemoGlobalDB.SHOWALL();
-
-
 
 		// 파일명 추출
 		size_t pos = filePath.find_last_of('\\');
@@ -115,11 +117,18 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 			filePath = filePath.substr(pos + 1);
 			cout << "파일명 추출 : " << filePath << endl;
 		}
-		
+	
+
+		// == == 1) 파일 시스템에 저장
 		// 특정 디렉토리에 저장하기
 		string dir_path = "user/eirc8260/" + filePath;
 		outputFile.open(dir_path.c_str(), std::ios_base::binary);
-		//outputFile.open(filePath.c_str(), std::ios_base::binary);
+
+		// == == 2) 데이터베이스에 저장
+		//TODO : 파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
+		DemoGlobalDB.INSERT(filePath, "Size", dir_path, LatestUpdateTime);
+		
+
 
 		if (!outputFile) {
 			cout << "파일 오류 " << endl;

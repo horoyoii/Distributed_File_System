@@ -16,7 +16,7 @@ MyUserTcpClient::MyUserTcpClient(boost::asio::io_context& io_context, const std:
 
 
 	// 먼저 서버에 파일의 경로와 파일의 크기를 전송
-	cout << "파일 정보 전송" << endl;
+	cout << "유저 정보 전송" << endl;
 	std::ostream requestStream(&request);
 	requestStream << "enter" << "\n" << userName << "\n" << userPW << "\n\n";
 
@@ -97,7 +97,7 @@ void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::si
 	requestStream >> AccessResult;
 	string responseTOKEN;
 	int cnt;
-	cout << "내용을 받았습니다. from server  : " << AccessResult << endl;
+	cout << "[인증성공]내용을 받았습니다. from server  : " << AccessResult << endl;
 	
 	if (AccessResult == "true") {
 		accResult = true;
@@ -105,10 +105,19 @@ void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::si
 		cnt = atoi(responseTOKEN.c_str()); // 총몇개인지 우선 알아낸다.
 
 		// 받아온 정보를 따로 저장한ㄷ.
-		cout << "== 나의 디렉토리 정보 ==" << endl;
+		cout << "========== 나의 디렉토리 정보 cnt : "<<cnt<<"======================" << endl;
 		for(int i=1;i<=cnt;i++) {
-			requestStream >> responseTOKEN;
-			cout << i<<" : "<<responseTOKEN << endl;
+			for (int j = 0; j < 5; j++) {
+				getline(requestStream, responseTOKEN, '\n');
+				cout << " name : " << responseTOKEN << endl;
+				getline(requestStream, responseTOKEN, '\n');
+				cout << " size : " << responseTOKEN << endl;
+				getline(requestStream, responseTOKEN, '\n');
+				cout << " path : " << responseTOKEN << endl;
+				getline(requestStream, responseTOKEN, '\n');
+				cout << " date : " << responseTOKEN << endl;
+				getline(requestStream, responseTOKEN, '\n');
+			}
 
 			dataFromServer->setDateInfo(responseTOKEN, "hee");
 		}

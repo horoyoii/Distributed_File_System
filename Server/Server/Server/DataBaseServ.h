@@ -26,8 +26,13 @@ public:
 class DataBaseServ {
 private:
 	//TODO : MySQL 적용시 해쉬맵으로 바꾸기...
+	ofstream outFile;
+	ifstream inFile;
+
+	// =====
 	std::vector<ITEM> itemList;
 	int itemCnt;
+
 
 
 public:
@@ -37,5 +42,7 @@ public:
 	void DELETES();
 	void UPDATE(string fileName, string FileSize, string FilePath, string Time);
 	void SHOWALL();
+	void getAllItemInfo(ostream &requestStream);
+	int HowManyItem();
 
 };

@@ -33,6 +33,8 @@ int main(void) {
 		// 0) 모든 파일 보내기 
 		handler->SendAllFiles();
 
+
+
 		system("pause");
 
 		// 1) 스캔 시작하기 

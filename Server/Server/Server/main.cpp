@@ -39,7 +39,6 @@ void operate() {
 
 
 int main(void) {
-
 	cout << "Server Run" << endl;
 	operate();
 
