@@ -75,7 +75,7 @@ void MyUserTcpClient::handleConnect(const boost::system::error_code& err, tcp::r
 void MyUserTcpClient::handleWrite(const boost::system::error_code &err) {
 	if (!err) {
 		boost::asio::async_read_until(socket, ResponseBuf, "\n\n",
-			boost::bind(&MyUserTcpClient::TestCallback,
+			boost::bind(&MyUserTcpClient::ResponseListFromServer,
 				this, boost::asio::placeholders::error,
 				boost::asio::placeholders::bytes_transferred));
 
@@ -88,7 +88,7 @@ void MyUserTcpClient::handleWrite(const boost::system::error_code &err) {
 	}
 }
 
-void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::size_t bytesTransferred) {
+void MyUserTcpClient::ResponseListFromServer(const boost::system::error_code& err, std::size_t bytesTransferred) {
 
 	std::istream requestStream(&ResponseBuf);
 
@@ -102,24 +102,26 @@ void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::si
 	if (AccessResult == "true") {
 		accResult = true;
 		requestStream >> responseTOKEN;
+		//getline(requestStream, responseTOKEN, '\n');
 		cnt = atoi(responseTOKEN.c_str()); // 총몇개인지 우선 알아낸다.
-
-		// 받아온 정보를 따로 저장한ㄷ.
+		getline(requestStream, responseTOKEN, '\n'); // '\n' 하나 빼준다.
+		// 받아온 정보를 따로 저장한다.
+		string name, UpdateDate;
 		cout << "========== 나의 디렉토리 정보 cnt : "<<cnt<<"======================" << endl;
 		for(int i=1;i<=cnt;i++) {
-			for (int j = 0; j < 5; j++) {
 				getline(requestStream, responseTOKEN, '\n');
 				cout << " name : " << responseTOKEN << endl;
+				name = responseTOKEN;
 				getline(requestStream, responseTOKEN, '\n');
 				cout << " size : " << responseTOKEN << endl;
 				getline(requestStream, responseTOKEN, '\n');
 				cout << " path : " << responseTOKEN << endl;
 				getline(requestStream, responseTOKEN, '\n');
 				cout << " date : " << responseTOKEN << endl;
+				UpdateDate = responseTOKEN;
 				getline(requestStream, responseTOKEN, '\n');
-			}
-
-			dataFromServer->setDateInfo(responseTOKEN, "hee");
+				
+				dataFromServer->setDateInfo(name, UpdateDate);
 		}
 	
 	}
@@ -129,5 +131,8 @@ void MyUserTcpClient::TestCallback(const boost::system::error_code& err, std::si
 
 bool MyUserTcpClient::getAccResult()
 {
+	cout << "================서버로부터 받은 데이터 목록================" << endl;
+	dataFromServer->showAllData();
+	cout << "================서버로부터 받은 데이터 목록================" << endl;
 	return accResult;
 }

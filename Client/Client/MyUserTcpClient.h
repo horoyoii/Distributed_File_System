@@ -6,6 +6,14 @@ using namespace boost::asio::ip;
 
 class DataFromServer;
 
+/*
+서버로부터 유저 인증을 받고 (id와 pw를 보낸다.)
+그 결과로 인증 성공여부와
+
+자신의 db정보를 받는다.
+
+*/
+
 class MyUserTcpClient {
 private:
 	boost::asio::ip::tcp::resolver resolver; // provides the ability to resolve a query to a list of endpoints.
@@ -22,6 +30,6 @@ public:
 	void handleResolve(const boost::system::error_code& err, tcp::resolver::iterator  myIterator);
 	void handleConnect(const boost::system::error_code& err, tcp::resolver::iterator myIterator);
 	void handleWrite(const boost::system::error_code &err);
-	void TestCallback(const boost::system::error_code& err, std::size_t bytesTransferred);
+	void ResponseListFromServer(const boost::system::error_code& err, std::size_t bytesTransferred);
 	bool getAccResult();
 };

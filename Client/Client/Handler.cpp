@@ -75,7 +75,7 @@ void Handler::Scan() {
 	// Handler::dataFromServer 의 정보와 스캔된 현재 디렉토리의 파일 정보를 비교하여 
 	// 업로드할지를 판단한다.
 
-	dataFromServer->showAllData();
+	//dataFromServer->showAllData();
 	
 
 	cout << " == 클라이언트 측 디렉토리 정보 == " << endl;
@@ -84,8 +84,8 @@ void Handler::Scan() {
 		string pathh = "C:\\Users\\user\\Desktop\\place\\";
 		pathh += iterator->path().leaf().string();
 		boost::filesystem::path p{ pathh };
-		std::time_t t = boost::filesystem::last_write_time(p);
-
+		std::time_t last_update_time = boost::filesystem::last_write_time(p);
+		string last_update_time_toString = ctime(&last_update_time);
 
 		// 파일명만 추출
 		string fileName;
@@ -96,7 +96,7 @@ void Handler::Scan() {
 		}
 
 		// 비교 수행 후 update 되었다면 FileTcpClilent 수행
-		if (dataFromServer->getDateInfo(fileName) == "none") { // 서버에서 받아온 정보와 일치x
+		if (dataFromServer->getDateInfo(fileName, last_update_time_toString) == "none") { // 서버에서 받아온 정보와 일치x
 			cout << fileName << "이 서버에 동기화되지 않았다." << endl;
 			sendFile(pathh);
 		}
@@ -114,7 +114,7 @@ void Handler::Scan() {
 		
 
 		std::cout << "파일경로 : " << pathh << endl;
-		std::cout << std::ctime(&t) << '\n';
+		std::cout << std::ctime(&last_update_time) << '\n';
 	}
 	cout << " =======================================" << endl;
 
@@ -189,3 +189,11 @@ void Handler::sendFile(string file_path) {
 
 }
 
+
+
+void Handler::SendOneFileForTest(string fileFullPath) {
+	cout << "파일 하나 전송" << endl;
+	string path;
+	cin >> path;
+	sendFile(path);
+}

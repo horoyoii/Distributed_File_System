@@ -30,21 +30,23 @@ int main(void) {
 	if (handler->TryLogin()) {
 		cout << "인증 성공" << endl;
 
-		// 0) 모든 파일 보내기 
-		handler->SendAllFiles();
-
-
+		cout << "메모리 저장 상태 확인 " << endl;
+		handler->ShowAllInfo();
 
 		system("pause");
+
+
+		// 0) 모든 파일 보내기 
+		//handler->SendAllFiles();
 
 		// 1) 스캔 시작하기 
 		handler->StartScan();
 
 		// 2) File Trnasfer ===================================
-		cout << "============= send the File =============" << endl;
+		//cout << "============= send the File =============" << endl;
 		
 		//sendFile();
-		handler->ShowAllInfo();
+		//handler->ShowAllInfo();
 	}
 	else {
 		cout << "인증 실패" << endl;
@@ -57,7 +59,7 @@ int main(void) {
 
 
 
-
+	cout << "시스템 종료" << endl;
 	system("pause");
 	return 0;
 }

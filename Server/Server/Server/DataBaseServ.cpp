@@ -47,11 +47,13 @@ int DataBaseServ::HowManyItem() {
 void DataBaseServ::getAllItemInfo(ostream &requestStream) {
 	inFile.open("db.txt", ios::in | ios::binary);
 	string buffer;
+
 	while (inFile.peek() != EOF) {
 		getline(inFile, buffer);
 		if(buffer != "==")
 			requestStream << buffer << "\n";
 	}
+
 
 	inFile.close();
 }

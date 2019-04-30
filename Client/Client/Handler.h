@@ -17,10 +17,11 @@ public:
 	void sendFile(string file_path);
 	void StartScan();
 	void Scan();
-
 	void SendAllFiles(); // 최초 동기화 시...
 
 
+	// Test
+	void SendOneFileForTest(string fileFullPath);
 	void ShowAllInfo() { // 테스트함수
 		dataFromServer->showAllData();
 	}

@@ -12,22 +12,26 @@ void DataFromServer::Init(){
 }
 
 // key 값인 파일명은  \"파일명\" 으로 저장되어있다.
-string DataFromServer::getDateInfo(string path){
-	if (FileData.find("\""+path+ "\"") == FileData.end()) { // not found
+string DataFromServer::getDateInfo(string path, string UpdateTime){
+	if (FileData.find(path+"\r") == FileData.end()) { // not found
 		return "none";
 	}
 	else {
-		return "ok";
+		string time1 = FileData.find(path+"\r")->second +"\r";
+		if (!time1.compare(UpdateTime))
+			return "ok";
+		else
+			return "none";
 	}
 
 }
 
-void DataFromServer::setDateInfo(string path, string time){
-	FileData.insert(make_pair(path, time));
+void DataFromServer::setDateInfo(string name, string time){
+	FileData.insert(make_pair(name, time));
 }
 
 void DataFromServer::showAllData(){
-	for (auto it = FileData.begin(); it != FileData.end(); ++it) {
-		cout << "key : " << it->first << " // " << it->second << endl;
+	for (auto it = FileData.begin(); it != FileData.end(); it++) {
+		cout << "key : " << it->first << endl << it->second << endl;
 	}
 }
