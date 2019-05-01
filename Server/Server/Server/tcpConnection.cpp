@@ -91,7 +91,7 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 
 	}
 
-	if (instruction == "fileSend") {
+	if (instruction == "fileSend" || instruction == "fileUpdate") {
 		cout << "파일을 다운받는 중 from Server" << endl;
 		std::istream requestStream(&requestBuf);
 		string filePath, LatestUpdateTime;
@@ -125,9 +125,11 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		outputFile.open(dir_path.c_str(), std::ios_base::binary);
 
 		// == == 2) 데이터베이스에 저장
-		//TODO : 파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
-		DemoGlobalDB.INSERT(filePath, "Size", dir_path, LatestUpdateTime);
-		
+			//파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
+		if (instruction == "fileSend")
+			DemoGlobalDB.INSERT(filePath, "Size", dir_path, LatestUpdateTime);
+		else
+			DemoGlobalDB.UPDATE(filePath, "Size", dir_path, LatestUpdateTime);
 
 
 		if (!outputFile) {

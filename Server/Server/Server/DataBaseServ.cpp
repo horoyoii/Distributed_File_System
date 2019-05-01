@@ -60,18 +60,35 @@ void DataBaseServ::getAllItemInfo(ostream &requestStream) {
 
 
 void DataBaseServ::UPDATE(string fileName, string FileSize, string FilePath, string Time){
+	// db.txt에서 filename을 찾아서 time만 수정한다.
 
-	vector<ITEM>::iterator it;
-	for (it = itemList.begin(); it != itemList.end(); ++it) {
-		if ((*it).fileName == fileName) {
-			(*it).FileSize = FileSize;
-			(*it).FileLatestUpdateTime = Time;
+	string x;
+	ifstream file("db.txt");
+	ofstream ofile("db2.txt");
+	int cnt = 0;
+	while (!file.eof()){
+		getline(file, x);
+		if (x == fileName){
+			ofile << x << endl;
 
-			cout << fileName<<" : 데이터베이스 업데이터 완료" << endl;
-			break;
+			getline(file, x);
+			ofile << x << endl;
+
+			getline(file, x);
+			ofile << x << endl;
+			
+			getline(file, x);
+			ofile << Time << endl;
 		}
-
+		else
+			ofile << x << endl;
 	}
+
+	file.close();
+	ofile.close();
+	remove("db.txt");
+	rename("db2.txt", "db.txt");
+
 	
 }
 

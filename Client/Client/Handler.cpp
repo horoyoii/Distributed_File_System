@@ -47,20 +47,12 @@ void Handler::sendUser(string userName, string userPW) {
 }
 
 void Handler::StartScan() {
-	/*
-	int cnt = 0;
 	while (true) {
-		if (cnt % 100000)
-			Scan();
+		cout << "\n\n=== == == = == = 스캔 시작 = = === = == = ===  =" << endl << endl;
+		Scan();
 
-		cnt++;
-		Sleep(1000);
+		Sleep(10000); // 10초 단위로 스캔한다.
 	}
-	*/
-
-	// while(2시간) 마다?? 
-	
-	Scan();
 
 	
 }
@@ -80,7 +72,7 @@ void Handler::Scan() {
 
 	cout << " == 클라이언트 측 디렉토리 정보 == " << endl;
 	for (boost::filesystem::directory_iterator iterator("C:\\Users\\user\\Desktop\\place"); iterator != end; iterator++) {
-		cout << iterator->path().leaf() << "\n";
+		//cout << iterator->path().leaf() << "\n";
 		string pathh = "C:\\Users\\user\\Desktop\\place\\";
 		pathh += iterator->path().leaf().string();
 		boost::filesystem::path p{ pathh };
@@ -92,16 +84,27 @@ void Handler::Scan() {
 		size_t pos = pathh.find_last_of('\\');
 		if (pos != string::npos) {
 			fileName = pathh.substr(pos + 1);
-			cout << "파일명 추출 : " << fileName << endl;
 		}
 
 		// 비교 수행 후 update 되었다면 FileTcpClilent 수행
-		if (dataFromServer->getDateInfo(fileName, last_update_time_toString) == "none") { // 서버에서 받아온 정보와 일치x
+		string result = dataFromServer->getDateInfo(fileName, last_update_time_toString);
+
+		if (result == "none") { // 서버에서 받아온 정보와 일치x
 			cout << fileName << "이 서버에 동기화되지 않았다." << endl;
-			sendFile(pathh);
+			sendFile(pathh, true);
+
+			// 동기화되지 않았을 때의 트랜젝션은 ...??
+			
+			// 1) 기존 파일이 업데이트된 경우
+			dataFromServer->updateDateInfo(fileName, last_update_time_toString);
 		}
-		else {
+		else if(result == "ok"){
 			cout << fileName << "이 서버에 동기화되어있다." << endl;
+		}
+		else if (result == "new") {
+			cout << fileName <<"새로운 파일이 추가되었다." << endl;
+			sendFile(pathh);
+			dataFromServer->setDateInfo(fileName+"\r", last_update_time_toString);
 		}
 
 
@@ -113,7 +116,7 @@ void Handler::Scan() {
 		*/
 		
 
-		std::cout << "파일경로 : " << pathh << endl;
+		//std::cout << "파일경로 : " << pathh << endl;
 		std::cout << std::ctime(&last_update_time) << '\n';
 	}
 	cout << " =======================================" << endl;
@@ -163,7 +166,7 @@ void Handler::SendAllFiles(){
 
 
 
-void Handler::sendFile(string file_path) {
+void Handler::sendFile(string file_path, bool ForUpdate) {
 
 	cout << "=================" << endl;
 	cout << " 파일 전송 " << endl;
@@ -181,7 +184,7 @@ void Handler::sendFile(string file_path) {
 
 	// 3) 파일 전송 객체 생성
 	io_context io_con;
-	FileTcpClient client(io_con, *IP, file_path);
+	FileTcpClient client(io_con, *IP, file_path, ForUpdate);
 
 	io_con.run();
 

@@ -2,7 +2,7 @@
 
 
 
-FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH)
+FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH, bool ForUpdate)
 :resolver(io_context), socket(io_context){
 
 	size_t pos = server.find(':');
@@ -34,7 +34,11 @@ FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::str
 	// 먼저 서버에 파일의 경로와 파일의 크기를 전송
 	cout << "파일 정보 전송" << endl;
 	std::ostream requestStream(&request);
-	requestStream << "fileSend" << "\n" << FILE_PATH << "\n" << fileSize << "\n"<< std::ctime(&t) <<"\n\n";
+
+	if(!ForUpdate)
+		requestStream << "fileSend" << "\n" << FILE_PATH << "\n" << fileSize << "\n"<< std::ctime(&t) <<"\n\n";
+	else
+		requestStream << "fileUpdate" << "\n" << FILE_PATH << "\n" << fileSize << "\n" << std::ctime(&t) << "\n\n";
 
 	cout << "메타데이터 요청 크기 : " << request.size() << endl;
 

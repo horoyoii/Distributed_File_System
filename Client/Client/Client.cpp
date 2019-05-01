@@ -33,7 +33,7 @@ int main(void) {
 		cout << "메모리 저장 상태 확인 " << endl;
 		handler->ShowAllInfo();
 
-		system("pause");
+		//system("pause");
 
 
 		// 0) 모든 파일 보내기 
@@ -42,11 +42,9 @@ int main(void) {
 		// 1) 스캔 시작하기 
 		handler->StartScan();
 
-		// 2) File Trnasfer ===================================
-		//cout << "============= send the File =============" << endl;
 		
-		//sendFile();
-		//handler->ShowAllInfo();
+
+
 	}
 	else {
 		cout << "인증 실패" << endl;

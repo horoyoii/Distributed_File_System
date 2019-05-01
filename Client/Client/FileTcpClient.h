@@ -12,7 +12,7 @@ private:
 	boost::array<char, 8192> buf; // 한번에 보내는 용량 8192 byte
 
 public:
-	FileTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH);
+	FileTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH, bool ForUpdate);
 	void handleResolve(const boost::system::error_code& err, tcp::resolver::iterator  myIterator);
 	void handleConnect(const boost::system::error_code& err, tcp::resolver::iterator myIterator);
 	void handleWrite(const boost::system::error_code &err);
