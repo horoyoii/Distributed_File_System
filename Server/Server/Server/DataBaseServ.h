@@ -6,6 +6,30 @@
 typedef std::string TIME_TYPE;
 using namespace std;
 
+
+// db 콘솔 접근 : C:\Program Files\MySQL\MySQL Server 8.0\bin>mysql -u root -p mydb
+
+/*
+DB name : MyDB
+Table Info 
+
+ == Table User ==
+uid pk, 
+id varchar(20), 
+pw varchar(20)
+
+ == Table FileInfo == 
+uid fk references User,
+name varchar(50),
+lastudpatetime varchar(50)
+
+
+
+
+
+*/
+
+
 class ITEM {
 public:
 	std::string fileName;
@@ -23,25 +47,30 @@ public:
 
 
 
+
+
 // 데이터베이스에 대한 인터페이스를 제공하는 것이다.
 class DataBaseServ {
 private:
-		
+	MYSQL Conn;
+	MYSQL* ConnPtr = NULL;
+	MYSQL_RES* result;
+	MYSQL_ROW row;
+	int Stat;
 
 
-	//TODO : MySQL 적용시 해쉬맵으로 바꾸기...
-	ofstream outFile;
-	ifstream inFile;
 
 	// =====
 	std::vector<ITEM> itemList;
 	int itemCnt;
+	ofstream outFile;
+	ifstream inFile;
 
 
 
 public:
 	DataBaseServ();
-	
+	string QeuryUserInfo(string id); // pw를 반환
 	void INSERT(string fileName, string FileSize, string FilePath, string Time);
 	void DELETES();
 	void UPDATE(string fileName, string FileSize, string FilePath, string Time);

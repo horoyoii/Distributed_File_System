@@ -4,7 +4,7 @@
 
 using namespace std;
 
-
+// TODO : 싱글톤으로 변경
 DataBaseServ DemoGlobalDB;
 
 
@@ -59,24 +59,12 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		std::ostream requestStream(&AccessResultRespon);
 
 		// 비밀번호 대조
-		if (userPW == "12345") {
+		if (userPW == DemoGlobalDB.QeuryUserInfo(userName)) {
 			requestStream << "true" << "\n";
 
-			/*
-			boost::filesystem::directory_iterator end;
-			int cnt = 0;
-			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
-				cnt++;
-			}
-			*/
 			requestStream << DemoGlobalDB.HowManyItem() << "\n";
 			cout << "how" << DemoGlobalDB.HowManyItem() << endl;
-			// 유저의 파일 정보들을 클라이언트로 보내준다.
-			/*
-			for (boost::filesystem::directory_iterator iterator("user/eirc8260"); iterator != end; iterator++) {
-				requestStream << iterator->path().leaf() << "\n";
-			}
-			*/
+
 			DemoGlobalDB.getAllItemInfo(requestStream);
 			requestStream << "\n\n";
 		}
@@ -101,7 +89,6 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		getline(requestStream, temp, '\n');
 		requestStream >> fileSize;
 		getline(requestStream, temp, '\n');
-		//requestStream >> LatestUpdateTime;
 		getline(requestStream, LatestUpdateTime, '\n');
 		requestStream.read(buf.c_array(), 1); // header의 끝은 '\n\n' 였다. 그래서 '\n'을 한번 더 빼준다.
 

@@ -8,9 +8,33 @@ using namespace std;
 DataBaseServ::DataBaseServ(){
 	itemList;
 	itemCnt = 0;
-	cout << "DB con called" << endl;
-	//inFile.open("db.txt", ios::in | ios::binary);
+	mysql_init(&Conn);
+	ConnPtr = mysql_real_connect(&Conn, "127.0.0.1", "root", "whdgus22", "MyDB", 3306, (char*)NULL, 0);
 
+	if (ConnPtr == NULL) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		exit(1);
+	}
+	printf("%s\n", "MySQL Connected");
+
+}
+
+string DataBaseServ::QeuryUserInfo(string id){
+	string Query = "SELECT * FROM user where id = \'" + id+"\'";
+	Stat = mysql_query(ConnPtr, Query.c_str());
+
+	if (Stat != 0) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		exit(1);
+	}
+	result = mysql_store_result(ConnPtr);
+	
+	string pw;
+	while ((row = mysql_fetch_row(result)) != NULL) {
+		printf("%s %s %s\n", row[0], row[1], row[2]);
+		pw = row[2];
+	}
+	return pw;
 }
 
 void DataBaseServ::INSERT(string fileName, string FileSize, string FilePath, string Time){
