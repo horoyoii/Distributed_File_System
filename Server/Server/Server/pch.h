@@ -13,3 +13,6 @@
 #include <boost/asio.hpp>
 #include <boost/core/noncopyable.hpp>
 #include <boost/enable_shared_from_this.hpp>
+
+#include<mysql.h>
+#pragma comment(lib, "libmySQL.lib")

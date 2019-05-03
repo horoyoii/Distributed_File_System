@@ -40,6 +40,37 @@ void operate() {
 
 int main(void) {
 	cout << "Server Run" << endl;
+
+	MYSQL Conn;
+	MYSQL* ConnPtr = NULL;
+	MYSQL_RES* result;
+	MYSQL_ROW row;
+	int Stat;
+
+	mysql_init(&Conn);
+	ConnPtr = mysql_real_connect(&Conn, "127.0.0.1", "root", "whdgus22", "MyDB", 3306, (char*)NULL, 0);
+
+	if (ConnPtr == NULL) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		return 1;
+	}
+	printf("%s\n", "Connected");
+
+	const char *Query = "SELECT * FROM user";
+	Stat = mysql_query(ConnPtr, Query);
+	if (Stat != 0) {
+
+	}
+
+	result = mysql_store_result(ConnPtr);
+	while ((row = mysql_fetch_row(result)) != NULL) {
+		printf("%s %s %s\n", row[0], row[1], row[2]);
+	}
+
+
+	system("pause");
+
+
 	operate();
 
 
