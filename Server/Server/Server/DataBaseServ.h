@@ -1,6 +1,7 @@
 #pragma once
 #include"pch.h"
 
+// MySQL port 3306
 
 typedef std::string TIME_TYPE;
 using namespace std;
@@ -25,6 +26,9 @@ public:
 // 데이터베이스에 대한 인터페이스를 제공하는 것이다.
 class DataBaseServ {
 private:
+		
+
+
 	//TODO : MySQL 적용시 해쉬맵으로 바꾸기...
 	ofstream outFile;
 	ifstream inFile;

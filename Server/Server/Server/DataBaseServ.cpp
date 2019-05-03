@@ -14,9 +14,6 @@ DataBaseServ::DataBaseServ(){
 }
 
 void DataBaseServ::INSERT(string fileName, string FileSize, string FilePath, string Time){
-	//ITEM item(fileName, FileSize, FilePath, Time);
-	//itemList.push_back(item);
-	//itemCnt++;
 	outFile.open("db.txt", fstream::out | fstream::app); // 이어 쓰기
 	outFile << fileName << endl; 
 	outFile << FileSize << endl;

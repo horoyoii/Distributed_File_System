@@ -10,7 +10,7 @@ DataBaseServ DemoGlobalDB;
 
 tcpConnection::tcpConnection(boost::asio::io_context& io_context)
 	:mySocket(io_context) {
-	cout << "tcpConnection 생성자 호출" << endl;
+	//cout << "tcpConnection 생성자 호출" << endl;
 }
 
 

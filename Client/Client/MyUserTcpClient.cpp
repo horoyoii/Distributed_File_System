@@ -107,17 +107,17 @@ void MyUserTcpClient::ResponseListFromServer(const boost::system::error_code& er
 		getline(requestStream, responseTOKEN, '\n'); // '\n' 하나 빼준다.
 		// 받아온 정보를 따로 저장한다.
 		string name, UpdateDate;
-		cout << "========== 나의 디렉토리 정보 cnt : "<<cnt<<"======================" << endl;
+		//cout << "========== 나의 디렉토리 정보 cnt : "<<cnt<<"======================" << endl;
 		for(int i=1;i<=cnt;i++) {
 				getline(requestStream, responseTOKEN, '\n');
-				cout << " name : " << responseTOKEN << endl;
+				//cout << " name : " << responseTOKEN << endl;
 				name = responseTOKEN;
 				getline(requestStream, responseTOKEN, '\n');
-				cout << " size : " << responseTOKEN << endl;
+				//cout << " size : " << responseTOKEN << endl;
 				getline(requestStream, responseTOKEN, '\n');
-				cout << " path : " << responseTOKEN << endl;
+				//cout << " path : " << responseTOKEN << endl;
 				getline(requestStream, responseTOKEN, '\n');
-				cout << " date : " << responseTOKEN << endl;
+				//cout << " date : " << responseTOKEN << endl;
 				UpdateDate = responseTOKEN;
 				getline(requestStream, responseTOKEN, '\n');
 				
@@ -133,6 +133,5 @@ bool MyUserTcpClient::getAccResult()
 {
 	cout << "================서버로부터 받은 데이터 목록================" << endl;
 	dataFromServer->showAllData();
-	cout << "================서버로부터 받은 데이터 목록================" << endl;
 	return accResult;
 }
