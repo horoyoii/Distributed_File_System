@@ -97,7 +97,7 @@ void MyUserTcpClient::ResponseListFromServer(const boost::system::error_code& er
 	requestStream >> AccessResult;
 	string responseTOKEN;
 	int cnt;
-	cout << "[인증성공]내용을 받았습니다. from server  : " << AccessResult << endl;
+	cout << "[인증성공] 내용을 받았습니다. from server  : " << AccessResult << endl;
 	
 	if (AccessResult == "true") {
 		accResult = true;
@@ -107,19 +107,12 @@ void MyUserTcpClient::ResponseListFromServer(const boost::system::error_code& er
 		getline(requestStream, responseTOKEN, '\n'); // '\n' 하나 빼준다.
 		// 받아온 정보를 따로 저장한다.
 		string name, UpdateDate;
-		//cout << "========== 나의 디렉토리 정보 cnt : "<<cnt<<"======================" << endl;
 		for(int i=1;i<=cnt;i++) {
 				getline(requestStream, responseTOKEN, '\n');
-				//cout << " name : " << responseTOKEN << endl;
 				name = responseTOKEN;
+				
 				getline(requestStream, responseTOKEN, '\n');
-				//cout << " size : " << responseTOKEN << endl;
-				getline(requestStream, responseTOKEN, '\n');
-				//cout << " path : " << responseTOKEN << endl;
-				getline(requestStream, responseTOKEN, '\n');
-				//cout << " date : " << responseTOKEN << endl;
 				UpdateDate = responseTOKEN;
-				getline(requestStream, responseTOKEN, '\n');
 				
 				dataFromServer->setDateInfo(name, UpdateDate);
 		}

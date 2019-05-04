@@ -62,12 +62,7 @@ void Handler::StartScan() {
 void Handler::Scan() {
 	boost::filesystem::directory_iterator end;
 	int cnt = 0;
-
-
 	// Handler::dataFromServer 의 정보와 스캔된 현재 디렉토리의 파일 정보를 비교하여 
-	// 업로드할지를 판단한다.
-
-	//dataFromServer->showAllData();
 	
 
 	cout << " == 클라이언트 측 디렉토리 정보 == " << endl;
@@ -104,7 +99,7 @@ void Handler::Scan() {
 		else if (result == "new") {
 			cout << fileName <<"새로운 파일이 추가되었다." << endl;
 			sendFile(pathh);
-			dataFromServer->setDateInfo(fileName+"\r", last_update_time_toString);
+			dataFromServer->setDateInfo(fileName, last_update_time_toString);
 		}
 
 

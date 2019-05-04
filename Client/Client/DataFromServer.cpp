@@ -11,14 +11,14 @@ void DataFromServer::Init(){
 
 }
 
-// key 값인 파일명은  "파일명\r" 으로 저장되어있다.
+// key 값인 파일명은  "파일명" 으로 저장되어있다.
 string DataFromServer::getDateInfo(string path, string UpdateTime){
-	if (FileData.find(path+"\r") == FileData.end()) { // not found
+	if (FileData.find(path) == FileData.end()) { // not found
 		return "new";
 	}
 	else {
-		string timeFromServer = FileData.find(path+"\r")->second;
-		timeFromServer = timeFromServer.substr(0, timeFromServer.size() - 1);
+		string timeFromServer = FileData.find(path)->second;
+		//timeFromServer = timeFromServer.substr(0, timeFromServer.size() - 1);
 
 		if (!timeFromServer.compare(UpdateTime.substr(0, UpdateTime.size()-1)))
 			return "ok";
@@ -39,6 +39,6 @@ void DataFromServer::showAllData(){
 }
 
 void DataFromServer::updateDateInfo(string name, string time){
-	FileData.find(name+"\r")->second = time;
+	FileData.find(name)->second = time;
 
 }

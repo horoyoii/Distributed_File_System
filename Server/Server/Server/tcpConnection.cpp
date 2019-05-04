@@ -10,7 +10,6 @@ DataBaseServ DemoGlobalDB;
 
 tcpConnection::tcpConnection(boost::asio::io_context& io_context)
 	:mySocket(io_context) {
-	//cout << "tcpConnection 생성자 호출" << endl;
 }
 
 
@@ -61,11 +60,9 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		// 비밀번호 대조
 		if (userPW == DemoGlobalDB.QeuryUserInfo(userName)) {
 			requestStream << "true" << "\n";
+			requestStream << DemoGlobalDB.HowManyItem("1") << "\n";
 
-			requestStream << DemoGlobalDB.HowManyItem() << "\n";
-			cout << "how" << DemoGlobalDB.HowManyItem() << endl;
-
-			DemoGlobalDB.getAllItemInfo(requestStream);
+			DemoGlobalDB.getAllItemInfo(requestStream, "1");
 			requestStream << "\n\n";
 		}
 		else
@@ -113,11 +110,12 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 
 		// == == 2) 데이터베이스에 저장
 			//파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
-		if (instruction == "fileSend")
-			DemoGlobalDB.INSERT(filePath, "Size", dir_path, LatestUpdateTime);
-		else
-			DemoGlobalDB.UPDATE(filePath, "Size", dir_path, LatestUpdateTime);
-
+		if (instruction == "fileSend") {
+			DemoGlobalDB.INSERT_FILE_INFO("1", filePath, LatestUpdateTime);
+		}
+		else {
+			DemoGlobalDB.UPDATE_FILE_INFO("1", filePath, LatestUpdateTime);
+		}
 
 		if (!outputFile) {
 			cout << "파일 오류 " << endl;

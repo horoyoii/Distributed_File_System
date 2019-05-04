@@ -71,11 +71,16 @@ private:
 public:
 	DataBaseServ();
 	string QeuryUserInfo(string id); // pw¸¦ ¹ÝÈ¯
+	
+	void INSERT_FILE_INFO(string uid, string file_name, string last_update_time);
+	void UPDATE_FILE_INFO(string uid, string file_name, string last_update_time);
+
+	
 	void INSERT(string fileName, string FileSize, string FilePath, string Time);
 	void DELETES();
 	void UPDATE(string fileName, string FileSize, string FilePath, string Time);
 	void SHOWALL();
-	void getAllItemInfo(ostream &requestStream);
-	int HowManyItem();
+	void getAllItemInfo(ostream &requestStream, string uid);
+	int HowManyItem(string uid);
 
 };

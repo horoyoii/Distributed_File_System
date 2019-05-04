@@ -34,7 +34,32 @@ string DataBaseServ::QeuryUserInfo(string id){
 		printf("%s %s %s\n", row[0], row[1], row[2]);
 		pw = row[2];
 	}
+
 	return pw;
+}
+
+void DataBaseServ::INSERT_FILE_INFO(string uid, string file_name, string last_update_time){
+	string Query = "INSERT INTO fileinfo VALUES (" + uid +", \'"+file_name +"\', \'"+last_update_time + "\')";
+	Stat = mysql_query(ConnPtr, Query.c_str());
+
+	if (Stat != 0) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		exit(1);
+	}
+
+	result = mysql_store_result(ConnPtr);
+}
+
+void DataBaseServ::UPDATE_FILE_INFO(string uid, string file_name, string last_update_time){
+	string Query = "UPDATE fileinfo SET lastudpatetime = \'" +last_update_time +"\' WHERE uid = \'"+uid+"\' and name = \'"+file_name+"\'" ;
+	Stat = mysql_query(ConnPtr, Query.c_str());
+
+	if (Stat != 0) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		exit(1);
+	}
+
+	result = mysql_store_result(ConnPtr);
 }
 
 void DataBaseServ::INSERT(string fileName, string FileSize, string FilePath, string Time){
@@ -52,31 +77,44 @@ void DataBaseServ::DELETES(){
 
 }
 
-int DataBaseServ::HowManyItem() {
-	inFile.open("db.txt", ios::in | ios::binary);
-	string buffer;
-	int cnt = 0;
-	while (inFile.peek() != EOF) {
-		getline(inFile, buffer);
-		cnt++;
+int DataBaseServ::HowManyItem(string uid) {
+	string Query = "SELECT count(*) from fileinfo where uid = " + uid;
+	Stat = mysql_query(ConnPtr, Query.c_str());
+
+	if (Stat != 0) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		exit(1);
 	}
 
-	inFile.close();
-	return cnt / 5;
+	result = mysql_store_result(ConnPtr);
+	int cnt;
+
+	while ((row = mysql_fetch_row(result)) != NULL) {
+		cnt = atoi(row[0]);
+	}
+
+
+	
+	return cnt;
+
 }
 
-void DataBaseServ::getAllItemInfo(ostream &requestStream) {
-	inFile.open("db.txt", ios::in | ios::binary);
-	string buffer;
+void DataBaseServ::getAllItemInfo(ostream &requestStream, string uid ) {
+	string Query = "SELECT * from fileinfo where uid = " + uid;
+	Stat = mysql_query(ConnPtr, Query.c_str());
 
-	while (inFile.peek() != EOF) {
-		getline(inFile, buffer);
-		if(buffer != "==")
-			requestStream << buffer << "\n";
+	if (Stat != 0) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		exit(1);
 	}
 
+	result = mysql_store_result(ConnPtr);
 
-	inFile.close();
+	while ((row = mysql_fetch_row(result)) != NULL) {
+		requestStream << row[1] << "\n";
+		requestStream << row[2] << "\n";
+	}
+
 }
 
 
