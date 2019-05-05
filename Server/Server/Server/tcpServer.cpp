@@ -27,7 +27,7 @@ void tcpServer::handleAccept(ptrTcpConnection currentConnection, const boost::sy
 		currentConnection->start();
 	}
 	else {
-		cout << "awefawefawef" << endl;
+		//cout << "awefawefawef" << endl;
 	}
 }
 

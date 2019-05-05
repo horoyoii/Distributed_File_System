@@ -30,20 +30,6 @@ lastudpatetime varchar(50)
 */
 
 
-class ITEM {
-public:
-	std::string fileName;
-	std::string FileSize;
-	std::string FilePath;
-	std::string FileLatestUpdateTime;
-
-	ITEM(string fileName, string FileSize, string FilePath, string Time)
-		:fileName(fileName), FileSize(FileSize), FilePath(FilePath), FileLatestUpdateTime(Time){
-		
-	}
-
-
-};
 
 
 
@@ -61,15 +47,16 @@ private:
 
 
 	// =====
-	std::vector<ITEM> itemList;
 	int itemCnt;
 	ofstream outFile;
 	ifstream inFile;
 
 
-
-public:
 	DataBaseServ();
+	static DataBaseServ* instance;
+public:
+	static DataBaseServ* getInstance();
+
 	string QeuryUserInfo(string id); // pw¸¦ ¹ÝÈ¯
 	
 	void INSERT_FILE_INFO(string uid, string file_name, string last_update_time);
@@ -82,5 +69,6 @@ public:
 	void SHOWALL();
 	void getAllItemInfo(ostream &requestStream, string uid);
 	int HowManyItem(string uid);
-
+	string getUserUid(string userID);
 };
+

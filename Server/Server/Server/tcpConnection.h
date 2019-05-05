@@ -1,5 +1,6 @@
 #pragma once
 #include"pch.h"
+#include"DataBaseServ.h"
 
 class tcpConnection : public boost::enable_shared_from_this<tcpConnection> {
 private:
@@ -9,7 +10,8 @@ private:
 	std::ofstream outputFile;
 	size_t fileSize;
 	boost::asio::streambuf AccessResultRespon;
-
+	std::string userID;
+	std::string userUID;
 
 public:
 

@@ -30,6 +30,7 @@ string DataFromServer::getDateInfo(string path, string UpdateTime){
 
 void DataFromServer::setDateInfo(string name, string time){
 	FileData.insert(make_pair(name, time));
+
 }
 
 void DataFromServer::showAllData(){

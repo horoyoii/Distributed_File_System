@@ -11,25 +11,17 @@ void operate() {
 			tcpServer *myTcpServer = new tcpServer(1000);
 			delete myTcpServer;
 		}
-
-
 	}
 	catch (exception &e) {
 		cout << e.what() << endl;
 	}
-
 
 }
 
 
 int main(void) {
 	cout << "Server Run" << endl;
-	
-	
-
 	operate();
-
-
 
 	system("pause");
 	return 0;

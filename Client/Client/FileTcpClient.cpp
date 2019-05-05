@@ -2,8 +2,8 @@
 
 
 
-FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH, bool ForUpdate)
-:resolver(io_context), socket(io_context){
+FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::string& server, const std::string& FILE_PATH, bool ForUpdate, string userName)
+:resolver(io_context), socket(io_context), userName(userName){
 
 	size_t pos = server.find(':');
 	if (pos == string::npos) {
@@ -36,9 +36,9 @@ FileTcpClient::FileTcpClient(boost::asio::io_context& io_context, const std::str
 	std::ostream requestStream(&request);
 
 	if(!ForUpdate)
-		requestStream << "fileSend" << "\n" << FILE_PATH << "\n" << fileSize << "\n"<< std::ctime(&t) <<"\n\n";
+		requestStream << "fileSend" << "\n" <<userName<<"\n"<< FILE_PATH << "\n" << fileSize << "\n"<< std::ctime(&t) <<"\n\n";
 	else
-		requestStream << "fileUpdate" << "\n" << FILE_PATH << "\n" << fileSize << "\n" << std::ctime(&t) << "\n\n";
+		requestStream << "fileUpdate"<<"\n" << userName <<"\n"<< FILE_PATH << "\n" << fileSize << "\n" << std::ctime(&t) << "\n\n";
 
 	cout << "메타데이터 요청 크기 : " << request.size() << endl;
 

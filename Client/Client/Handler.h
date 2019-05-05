@@ -14,7 +14,7 @@ public:
 
 	bool TryLogin();
 	void sendUser(string userName, string userPW);
-	void sendFile(string file_path, bool ForUpdate = false);
+	void sendFile(string file_path, string userName, bool ForUpdate = false);
 	void StartScan();
 	void Scan();
 	void SendAllFiles(); // 최초 동기화 시...

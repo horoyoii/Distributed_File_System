@@ -4,9 +4,6 @@
 
 using namespace std;
 
-// TODO : 싱글톤으로 변경
-DataBaseServ DemoGlobalDB;
-
 
 tcpConnection::tcpConnection(boost::asio::io_context& io_context)
 	:mySocket(io_context) {
@@ -53,16 +50,16 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		cout << "이름 : " << userName << "  pw : " << userPW << endl;
 
 
-
+		userUID = DataBaseServ::getInstance()->getUserUid(userName);
 		// RESPONSE
 		std::ostream requestStream(&AccessResultRespon);
 
 		// 비밀번호 대조
-		if (userPW == DemoGlobalDB.QeuryUserInfo(userName)) {
+		if (userPW == DataBaseServ::getInstance()->QeuryUserInfo(userName)) {
 			requestStream << "true" << "\n";
-			requestStream << DemoGlobalDB.HowManyItem("1") << "\n";
+			requestStream << DataBaseServ::getInstance()->HowManyItem(userUID) << "\n";
 
-			DemoGlobalDB.getAllItemInfo(requestStream, "1");
+			DataBaseServ::getInstance()->getAllItemInfo(requestStream, userUID);
 			requestStream << "\n\n";
 		}
 		else
@@ -77,11 +74,15 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 	}
 
 	if (instruction == "fileSend" || instruction == "fileUpdate") {
+		// 사용자 식별 
+		
+
 		cout << "파일을 다운받는 중 from Server" << endl;
 		std::istream requestStream(&requestBuf);
 		string filePath, LatestUpdateTime;
 		string temp;
-
+		requestStream >> userID;
+		getline(requestStream, temp, '\n');
 		requestStream >> filePath;
 		getline(requestStream, temp, '\n');
 		requestStream >> fileSize;
@@ -90,7 +91,7 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		requestStream.read(buf.c_array(), 1); // header의 끝은 '\n\n' 였다. 그래서 '\n'을 한번 더 빼준다.
 
 		// 파일 정보 출력
-		cout << " == 파일 정보 ==" << endl;
+		cout << " == 파일 정보 == FROM " <<userID<<endl;
 		cout << filePath << " 크기 : " << fileSize << "bytes" << endl;
 		cout << "update time : " << LatestUpdateTime << endl;
 
@@ -103,18 +104,20 @@ void tcpConnection::handleReadRequest(const boost::system::error_code& err, std:
 		}
 	
 
+		userUID = DataBaseServ::getInstance()->getUserUid(userID);
+
 		// == == 1) 파일 시스템에 저장
 		// 특정 디렉토리에 저장하기
-		string dir_path = "user/eirc8260/" + filePath;
+		string dir_path = "user/"+userID+"/" + filePath;
 		outputFile.open(dir_path.c_str(), std::ios_base::binary);
 
 		// == == 2) 데이터베이스에 저장
 			//파일명 - 가장 최근 업데이트 시간 을 데이터베이스에 저장한다.
 		if (instruction == "fileSend") {
-			DemoGlobalDB.INSERT_FILE_INFO("1", filePath, LatestUpdateTime);
+			DataBaseServ::getInstance()->INSERT_FILE_INFO(userUID, filePath, LatestUpdateTime);
 		}
 		else {
-			DemoGlobalDB.UPDATE_FILE_INFO("1", filePath, LatestUpdateTime);
+			DataBaseServ::getInstance()->UPDATE_FILE_INFO(userUID, filePath, LatestUpdateTime);
 		}
 
 		if (!outputFile) {

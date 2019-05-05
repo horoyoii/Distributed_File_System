@@ -3,10 +3,23 @@
 using namespace std;
 
 
+DataBaseServ *DataBaseServ::instance; // ? 
+std::mutex _mutex;
+DataBaseServ* DataBaseServ::getInstance() {
+	if (instance == nullptr) {
+		std::lock_guard<std::mutex> lock(_mutex);
+		if (instance == nullptr) {
+			//cout << "db singleton 초기화" << endl;
+			instance = new DataBaseServ();
+		}
+	}
+
+	// _mutex는 scope밖으로 나가면 자동으로 release된다.
+	return instance;
+}
 
 
 DataBaseServ::DataBaseServ(){
-	itemList;
 	itemCnt = 0;
 	mysql_init(&Conn);
 	ConnPtr = mysql_real_connect(&Conn, "127.0.0.1", "root", "whdgus22", "MyDB", 3306, (char*)NULL, 0);
@@ -99,6 +112,23 @@ int DataBaseServ::HowManyItem(string uid) {
 
 }
 
+string DataBaseServ::getUserUid(string userID){
+	string Query = "SELECT * FROM user where id = \'" + userID + "\'";
+	Stat = mysql_query(ConnPtr, Query.c_str());
+
+	if (Stat != 0) {
+		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
+		exit(1);
+	}
+
+	result = mysql_store_result(ConnPtr);
+	string uid;
+	while ((row = mysql_fetch_row(result)) != NULL) {
+		uid = row[0];
+	}
+	return uid;
+}
+
 void DataBaseServ::getAllItemInfo(ostream &requestStream, string uid ) {
 	string Query = "SELECT * from fileinfo where uid = " + uid;
 	Stat = mysql_query(ConnPtr, Query.c_str());
@@ -153,11 +183,4 @@ void DataBaseServ::UPDATE(string fileName, string FileSize, string FilePath, str
 
 void DataBaseServ::SHOWALL() {
 	cout << "SHOW ALL ======" << endl;
-	vector<ITEM>::iterator it;
-	int cnt = 1;
-	for (it = itemList.begin(); it != itemList.end(); ++it) {		
-		cout << cnt++ << " : " << (*it).fileName << " - " << (*it).FileLatestUpdateTime << endl;
-
-	}
-	cout << "===================" << endl;
 }
