@@ -22,7 +22,7 @@ DataBaseServ* DataBaseServ::getInstance() {
 DataBaseServ::DataBaseServ(){
 	itemCnt = 0;
 	mysql_init(&Conn);
-	ConnPtr = mysql_real_connect(&Conn, "127.0.0.1", "root", "whdgus22", "MyDB", 3306, (char*)NULL, 0);
+	ConnPtr = mysql_real_connect(&Conn, "127.0.0.1", "root", "whdgus22", "mydb2", 3306, (char*)NULL, 0);
 
 	if (ConnPtr == NULL) {
 		fprintf(stderr, "MySQL connection error : %s", mysql_error(&Conn));
@@ -64,7 +64,7 @@ void DataBaseServ::INSERT_FILE_INFO(string uid, string file_name, string last_up
 }
 
 void DataBaseServ::UPDATE_FILE_INFO(string uid, string file_name, string last_update_time){
-	string Query = "UPDATE fileinfo SET lastudpatetime = \'" +last_update_time +"\' WHERE uid = \'"+uid+"\' and name = \'"+file_name+"\'" ;
+	string Query = "UPDATE fileinfo SET lastupdatetime = \'" +last_update_time +"\' WHERE uid = \'"+uid+"\' and name = \'"+file_name+"\'" ;
 	Stat = mysql_query(ConnPtr, Query.c_str());
 
 	if (Stat != 0) {

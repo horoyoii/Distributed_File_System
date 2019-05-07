@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'mainapp',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,10 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATE_DIRS = (
+    os.path.join('D:\\Sources\\SaaS\\Server\\WebServer\\webserver\\mainapp', 'templates'),
+)
+
 WSGI_APPLICATION = 'webserver.wsgi.application'
 
 
@@ -75,8 +80,12 @@ WSGI_APPLICATION = 'webserver.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME':'mydb',
+        'USER':'root',
+        'PASSWORD':'whdgus22',
+        'HOST':'localhost',
+        'PORT':'3306'
     }
 }
 
