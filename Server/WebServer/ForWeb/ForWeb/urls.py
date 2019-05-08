@@ -16,8 +16,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from mainapp.views import *
+from mainapp import views
+from django.conf.urls import url, include
+
+
+from rest_framework import routers
+
+router =routers.DefaultRouter()
+router.register(r'fileinfos', views.FileInfoViewSet)
+
 
 urlpatterns = [
+    url(r'^', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    #url('^fileinfos/(?P<uid>.+)/$', FileInfoViewSet.as_view({'get':'list'})),
     path('admin/', admin.site.urls),
     path('index/', index),
 
