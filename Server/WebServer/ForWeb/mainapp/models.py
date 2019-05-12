@@ -14,7 +14,7 @@ class Fileinfo(models.Model):
     lastupdatetime = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'fileinfo'
         unique_together = (('uid', 'name'),)
 
@@ -25,7 +25,7 @@ class User(models.Model):
     pw = models.CharField(db_column='PW', max_length=20, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'user'
 
     

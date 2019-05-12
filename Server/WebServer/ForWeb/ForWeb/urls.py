@@ -23,14 +23,37 @@ from django.conf.urls import url, include
 from rest_framework import routers
 
 router =routers.DefaultRouter()
-router.register(r'fileinfos', views.FileInfoViewSet)
+#router.register(r'fileinfos', views.FileInfoViewSet)
+
+
+"""
+REST는 WEB 관련 기술이다.
+데이터를 주고받는 일종의 규약이다.
+ - 이 규약을 통한 이점 
+  1) 하나의 서버로 여러 종류의 클라이언트(web, ios, android)에 대응하도록 할 떄
+
+
+HTTP의 기본 메서드(GET, POST, PUT, DELETE)를 통해 유지한다.
+
+URI의 예 [ Uniform Resource Identifier ] : 인터넷 상의 자원 식별자
+http://www.remotty.com/countries/korea
+
+
+- CRUD를 URI에 표현하면 안된다. Rest에서 
+ GET /posts/13/delete HTTP/1.1
+ POST /posts/write HTTP/1.1
+ GET /delete?id=55 HTTP/1.1
+
+
+"""
 
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'^api/v1/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    #url('^fileinfos/(?P<uid>.+)/$', FileInfoViewSet.as_view({'get':'list'})),
     path('admin/', admin.site.urls),
     path('index/', index),
+    url(r'^api/v2/fileinfolist/$', views.FileInfoList.as_view()),
+    url(r'^api/v2/fileinfolist/(?P<uid>[0-9]+)/$', views.FileInfoDetail.as_view())
 
 ]
