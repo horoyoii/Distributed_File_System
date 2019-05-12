@@ -47,13 +47,21 @@ http://www.remotty.com/countries/korea
 
 """
 
+#  GET : /users/{userid}/devices (일반적으로 소유 ‘has’의 관계를 표현할 때)
+"""
+collection : uri에 표시할 때 복수형으로 표현
+document : 단수형으로 표현
 
+http:// restapi.example.com/sports/soccer/players/13
+>> sports, players : collection
+"""
 urlpatterns = [
     url(r'^api/v1/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
     path('index/', index),
-    url(r'^api/v2/fileinfolist/$', views.FileInfoList.as_view()),
-    url(r'^api/v2/fileinfolist/(?P<uid>[0-9]+)/$', views.FileInfoDetail.as_view())
+
+    url(r'^api/v2/users/(?P<userid>[\w\-]+)/filelists/$',views.FileList.as_view()),
+    
 
 ]

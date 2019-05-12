@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Fileinfo as FileInfoModel
+from .models import User as UserModel
 
 from rest_framework import viewsets
 from mainapp.serializers import FileinfoSerializer
@@ -53,7 +54,29 @@ class FileInfoDetail(APIView):
         serializer_class = FileinfoSerializer(fileinfo, many=True)
         return Response(serializer_class.data)
     
-     
+
+
+class FileList(APIView):
+    def get(self, request, userid, format=None):
+        print("====caleld get in FileList====")
+
+        ## objects를 대상으로 get을 사용한다.
+        result =UserModel.objects.get(id=userid)
+
+        fileinfo = FileInfoModel.objects.filter(uid=result.uid)
+        serializer_class = FileinfoSerializer(fileinfo, many=True)
+        return Response(serializer_class.data)
+
+class FileDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return FileInfoModel.objects.get(pk=pk)
+        except:
+            raise Http404
+    
+
+
+    
 
 
 
