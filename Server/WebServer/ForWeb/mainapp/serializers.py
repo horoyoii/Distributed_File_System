@@ -1,4 +1,5 @@
 from mainapp.models import Fileinfo
+from mainapp.models import Filelists
 from rest_framework import serializers
 
 
@@ -9,3 +10,9 @@ class FileinfoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Fileinfo
         fields = ('uid','name', 'lastupdatetime')
+
+class FileListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Filelists
+        fields = ('fid', 'name', 'lastupdatetime', 'uid')
+

@@ -62,6 +62,6 @@ urlpatterns = [
     path('index/', index),
 
     url(r'^api/v2/users/(?P<userid>[\w\-]+)/filelists/$',views.FileList.as_view()),
+    url(r'^api/v2/users/(?P<userid>[\w\-]+)/filelists/(?P<input_fid>[0-9]+)/$',views.FileListDetail.as_view()),
     
-
 ]

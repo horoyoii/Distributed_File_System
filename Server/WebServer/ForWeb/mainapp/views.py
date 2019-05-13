@@ -1,5 +1,9 @@
 from django.shortcuts import render
 from .models import Fileinfo as FileInfoModel
+
+from .models import Filelists as FileListsModel
+from mainapp.serializers import FileListSerializer
+
 from .models import User as UserModel
 
 from rest_framework import viewsets
@@ -56,6 +60,82 @@ class FileInfoDetail(APIView):
     
 
 
+# Real ======================================================================================
+
+class FileList(APIView):
+    def get(self, request, userid, format=None):
+        print("====caleld get in FileList====")
+
+        ## objects를 대상으로 get을 사용한다.
+        result =UserModel.objects.get(id=userid)
+        print(result.uid)
+        fileinfo = FileListsModel.objects.filter(uid=result.uid)
+        print(fileinfo)
+
+
+        serializer_class = FileListSerializer(fileinfo, many=True)
+        return Response(serializer_class.data)
+    
+
+    def post(self, request, userid, format=None):
+        serializer = FileListSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class FileListDetail(APIView):
+    def get_object(self, userid, input_fid):
+        try:
+            result =UserModel.objects.get(id=userid)
+            fileinfo = FileListsModel.objects.filter(uid=result.uid).filter(fid = input_fid)
+            return fileinfo
+        except UserModel.DoesNotExist:
+            raise Http404
+
+
+    def get(self, request, userid, input_fid, format=None):
+        print("====calleld get in FileListDetail====")
+
+        fileListDetailItem = self.get_object(userid, input_fid)
+        serializer_class = FileListSerializer(fileListDetailItem, many=True)
+        return Response(serializer_class.data) 
+    """
+    def put(self, request, userid, input_fid, format=None):
+        fileListDetailItem = self.get_object(userid, input_fid)
+        serializer = FileListSerializer(fileListDetailItem, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    """
+
+
+    def delete(self, request, userid, input_fid, format=None):
+        fileListDetailItem = self.get_object(userid, input_fid)
+        fileListDetailItem.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+FileListsModel
+
 class FileList(APIView):
     def get(self, request, userid, format=None):
         print("====caleld get in FileList====")
@@ -66,6 +146,8 @@ class FileList(APIView):
         fileinfo = FileInfoModel.objects.filter(uid=result.uid)
         serializer_class = FileinfoSerializer(fileinfo, many=True)
         return Response(serializer_class.data)
+"""
+
 
 class FileDetail(APIView):
     def get_object(self, pk):
