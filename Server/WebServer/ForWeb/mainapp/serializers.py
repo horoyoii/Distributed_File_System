@@ -1,5 +1,6 @@
 from mainapp.models import Fileinfo
 from mainapp.models import Filelists
+from mainapp.models import User
 from rest_framework import serializers
 
 
@@ -16,3 +17,7 @@ class FileListSerializer(serializers.ModelSerializer):
         model = Filelists
         fields = ('fid', 'name', 'lastupdatetime', 'uid')
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'pw')

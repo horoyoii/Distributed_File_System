@@ -49,10 +49,13 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<FileLists> datas = response.body();
                     if (datas != null) {
+                        String result="";
                         for (int i = 0; i < datas.size(); i++) {
                             Log.e("data" + i, datas.get(i).getName() + "");
+                            result+=datas.get(i).getName()+"\n";
                         }
                         Log.e("getData2 end", "======================================");
+                        resultTextView.setText(result);
                     }
                 }
             }

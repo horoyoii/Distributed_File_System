@@ -9,11 +9,26 @@ from .models import User as UserModel
 from rest_framework import viewsets
 from mainapp.serializers import FileinfoSerializer
 
+from mainapp.serializers import UserSerializer
 
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from django.http import HttpResponse
+
+import jwt,json
+from django.conf import settings
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import get_authorization_header, BaseAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework_jwt.serializers import jwt_payload_handler
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+
+from rest_framework.permissions import AllowAny
+from django.contrib.auth.signals import user_logged_in
 
 # Create your views here.
 def index(request):
@@ -54,8 +69,12 @@ class FileInfoDetail(APIView):
 
     def get(self, request, uid, format=None):
         print("caleld get in FileinfoDetail")
+        
         fileinfo = self.get_object(uid)
         serializer_class = FileinfoSerializer(fileinfo, many=True)
+
+
+
         return Response(serializer_class.data)
     
 
@@ -119,63 +138,147 @@ class FileListDetail(APIView):
         fileListDetailItem.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# 관련 용례나 예제를 찾을려고만 헀지 직접 구현하려고 생각하지 못하였다.
+# 여섯 번의 도전끝에 request header의 token을 직접 파싱하여 decoding하는, 프로시져를 직접 구현하여 문제를 해결할 수 있었다.
 
+class HelloView(APIView):
+    def get(self, request):
+        print("hello called")
+        
+        # 이부분을 데코레이터로 직접 만들어버린다. 이제
+        token = request.META.get('HTTP_AUTHORIZATION')
+        print(request.META.get('HTTP_AUTHORIZATION'))
+        print(token[6:])
+
+        payload = jwt.decode(token[6:], settings.SECRET_KEY)
+        print(payload)
+        id = payload['id']
+        uid = payload['uid']
+
+        content = {'message': 'Hello, World!'+id}
+        return Response(content)
+
+
+
+# 인증 ======================================================================================================
+
+# JWT 적용 사이트 
+# https://medium.com/python-pandemonium/json-web-token-based-authentication-in-django-b6dcfa42a332
+# https://code.tutsplus.com/tutorials/how-to-authenticate-with-jwt-in-django--cms-30460
+
+
+class Login(APIView):
+
+    def post(self, request, *args, **kwargs):
+        if not request.data:
+            return Response({'Error': "Please provide username/password"}, status="400")
     
+        username = request.data['username']
+        password = request.data.get('password','')
+        
 
-
-
-
-
-
-
-
-
-
-
-
-"""
-FileListsModel
-
-class FileList(APIView):
-    def get(self, request, userid, format=None):
-        print("====caleld get in FileList====")
-
-        ## objects를 대상으로 get을 사용한다.
-        result =UserModel.objects.get(id=userid)
-
-        fileinfo = FileInfoModel.objects.filter(uid=result.uid)
-        serializer_class = FileinfoSerializer(fileinfo, many=True)
-        return Response(serializer_class.data)
-"""
-
-
-class FileDetail(APIView):
-    def get_object(self, pk):
         try:
-            return FileInfoModel.objects.get(pk=pk)
-        except:
-            raise Http404
+            user = UserModel.objects.get(id=username, pw=password)
+
+        except UserModel.DoesNotExist:
+            return Response({'Error': "Invalid username/password"}, status="400")
+        # JWT : head - payload - signature
+        if user:
+            payload = {
+                'id': user.id,
+                'uid': user.uid,
+            }
+
+            jwt_token = {'token': jwt.encode(payload, settings.SECRET_KEY)} # SECRET_KEY가 "ABCDE"다
+            print(jwt_token)
+            
+            return Response(
+              jwt_token,
+              status=200,
+              content_type="application/json"
+            )
+
+        else:
+            return Response(
+              json.dumps({'Error': "Invalid credentials"}),
+              status=400,
+              content_type="application/json"
+            )
+
+
+
+class TokenAuthentication(BaseAuthentication):
+
+    model = None
+
+    def get_model(self):
+        return User
+
+    def authenticate(self, request):
+        print("==========auto")
+        auth = get_authorization_header(request).split()
+        if not auth or auth[0].lower() != b'token':
+            return None
+
+        if len(auth) == 1:
+            msg = 'Invalid token header. No credentials provided.'
+            raise exceptions.AuthenticationFailed(msg)
+        elif len(auth) > 2:
+            msg = 'Invalid token header'
+            raise exceptions.AuthenticationFailed(msg)
+
+        try:
+            token = auth[1]
+            if token=="null":
+                msg = 'Null token not allowed'
+                raise exceptions.AuthenticationFailed(msg)
+        except UnicodeError:
+            msg = 'Invalid token header. Token string should not contain invalid characters.'
+            raise exceptions.AuthenticationFailed(msg)
+
+        return self.authenticate_credentials(token)
+
+    def authenticate_credentials(self, token):
+        print("==========auto")
+        model = self.get_model()
+        payload = jwt.decode(token, "SECRET_KEY")
+        email = payload['email']
+        userid = payload['id']
+        msg = {'Error': "Token mismatch",'status' :"401"}
+        try:
+            
+            user = User.objects.get(
+                email=email,
+                id=userid,
+                is_active=True
+            )
+            
+            if not user.token['token'] == token:
+                raise exceptions.AuthenticationFailed(msg)
+               
+        except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
+            return HttpResponse({'Error': "Token is invalid"}, status="403")
+        except User.DoesNotExist:
+            return HttpResponse({'Error': "Internal server error"}, status="500")
+
+        return (user, token)
+
+    def authenticate_header(self, request):
+        return 'Token'
+
+
+
+
+
+
+
+
+
+    
     
 
 
-    
 
-
-
-
-
-
-
-# JSON으로 데이터를 보내야 하는 Restful API
-# Django ORM의 queryset은 HTML로 렌더링 되는 Django template을 사용하지 않고
-# Qeuryset을 Nested한 JSON으로 매핑되는 과정을 거쳐야 하는데 이것을 Serializer가 수행한다.
-
-"""
-class FileInfoViewSet(viewsets.ModelViewSet):
-    queryset = FileInfoModel.objects.all()
-
-    serializer_class = FileinfoSerializer
-"""
 
 
 

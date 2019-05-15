@@ -8,7 +8,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RetrofitAPI {
-    String URL = "http://115.145.241.11:8000/";
+    String URL = "http://115.145.241.18:8080/";
     /**
      * GET 방식, URL/posts/{userId} 호출.
      * Data Type의 JSON을 통신을 통해 받음.
@@ -22,6 +22,8 @@ public interface RetrofitAPI {
 
     @GET("/api/v2/users/{userId}/filelists")
     Call<List<FileLists>> getData(@Path("userId") String userId);
+
+
 
 
     /**

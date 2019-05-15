@@ -19,6 +19,7 @@ from mainapp.views import *
 from mainapp import views
 from django.conf.urls import url, include
 
+from rest_framework.authtoken.views import obtain_auth_token  
 
 from rest_framework import routers
 
@@ -63,5 +64,9 @@ urlpatterns = [
 
     url(r'^api/v2/users/(?P<userid>[\w\-]+)/filelists/$',views.FileList.as_view()),
     url(r'^api/v2/users/(?P<userid>[\w\-]+)/filelists/(?P<input_fid>[0-9]+)/$',views.FileListDetail.as_view()),
+    path('hello', views.HelloView.as_view(), name='hello'),
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('obtain_token', views.Login.as_view(), name='login'),
     
+
 ]
