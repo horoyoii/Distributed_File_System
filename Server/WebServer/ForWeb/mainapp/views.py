@@ -30,6 +30,9 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.signals import user_logged_in
 
+
+from mainapp.authentificate import CustomAuthentificate
+
 # Create your views here.
 def index(request):
     fileinfoList = FileInfoModel.objects.all()
@@ -48,49 +51,16 @@ http://raccoonyy.github.io/drf3-tutorial-3/
 
 """
 
-# 클래스 기반 뷰
-class FileInfoList(APIView):
-    def get(self, request, formnat=None):
-        print("caleld get in FileinfoList")
-        fileinfo = FileInfoModel.objects.all()
-        serializer_class = FileinfoSerializer(fileinfo, many=True)
-        return Response(serializer_class.data)
-
-    # post put delete 추가하기
-
-
-
-class FileInfoDetail(APIView):
-    def get_object(self, uid):
-        try:
-            return FileInfoModel.objects.filter(uid=uid)
-        except FileInfoModel.DoesNotExist:
-            return Http404
-
-    def get(self, request, uid, format=None):
-        print("caleld get in FileinfoDetail")
-        
-        fileinfo = self.get_object(uid)
-        serializer_class = FileinfoSerializer(fileinfo, many=True)
-
-
-
-        return Response(serializer_class.data)
-    
-
-
-# Real ======================================================================================
-
 class FileList(APIView):
-    def get(self, request, userid, format=None):
+    
+    @CustomAuthentificate
+    def get(self, request, contents, format=None):
         print("====caleld get in FileList====")
+    
+        userid = contents['userid']
 
-        ## objects를 대상으로 get을 사용한다.
         result =UserModel.objects.get(id=userid)
-        print(result.uid)
         fileinfo = FileListsModel.objects.filter(uid=result.uid)
-        print(fileinfo)
-
 
         serializer_class = FileListSerializer(fileinfo, many=True)
         return Response(serializer_class.data)
@@ -107,6 +77,7 @@ class FileList(APIView):
 
 
 class FileListDetail(APIView):
+
     def get_object(self, userid, input_fid):
         try:
             result =UserModel.objects.get(id=userid)
@@ -115,13 +86,26 @@ class FileListDetail(APIView):
         except UserModel.DoesNotExist:
             raise Http404
 
-
-    def get(self, request, userid, input_fid, format=None):
+    @CustomAuthentificate
+    def get(self, request, contents, format=None): # contents 는 데코레이터에서 kwargs로 넘어온다.
         print("====calleld get in FileListDetail====")
+        userid = contents['userid']
+        input_fid = contents['input_fid']
 
-        fileListDetailItem = self.get_object(userid, input_fid)
+        #fileListDetailItem = self.get_object(userid, input_fid)
+        
+        try:
+            result =UserModel.objects.get(id=userid)
+            fileListDetailItem = FileListsModel.objects.filter(uid=result.uid).filter(fid = input_fid)
+        except UserModel.DoesNotExist:
+            raise Http404
+
+        
         serializer_class = FileListSerializer(fileListDetailItem, many=True)
-        return Response(serializer_class.data) 
+        return Response(serializer_class.data)
+
+
+
     """
     def put(self, request, userid, input_fid, format=None):
         fileListDetailItem = self.get_object(userid, input_fid)
@@ -141,21 +125,13 @@ class FileListDetail(APIView):
 # 관련 용례나 예제를 찾을려고만 헀지 직접 구현하려고 생각하지 못하였다.
 # 여섯 번의 도전끝에 request header의 token을 직접 파싱하여 decoding하는, 프로시져를 직접 구현하여 문제를 해결할 수 있었다.
 
+
 class HelloView(APIView):
-    def get(self, request):
+
+    @CustomAuthentificate
+    def get(self, request, user):
         print("hello called")
-        
-        # 이부분을 데코레이터로 직접 만들어버린다. 이제
-        token = request.META.get('HTTP_AUTHORIZATION')
-        print(request.META.get('HTTP_AUTHORIZATION'))
-        print(token[6:])
-
-        payload = jwt.decode(token[6:], settings.SECRET_KEY)
-        print(payload)
-        id = payload['id']
-        uid = payload['uid']
-
-        content = {'message': 'Hello, World!'+id}
+        content = {'message': 'Hello, World!'+user.id}
         return Response(content)
 
 
@@ -182,11 +158,13 @@ class Login(APIView):
 
         except UserModel.DoesNotExist:
             return Response({'Error': "Invalid username/password"}, status="400")
+        
         # JWT : head - payload - signature
         if user:
             payload = {
                 'id': user.id,
-                'uid': user.uid,
+                'uid': user.uid,    
+                'scope' : ['can read', 'can delete']
             }
 
             jwt_token = {'token': jwt.encode(payload, settings.SECRET_KEY)} # SECRET_KEY가 "ABCDE"다
@@ -206,76 +184,6 @@ class Login(APIView):
             )
 
 
-
-class TokenAuthentication(BaseAuthentication):
-
-    model = None
-
-    def get_model(self):
-        return User
-
-    def authenticate(self, request):
-        print("==========auto")
-        auth = get_authorization_header(request).split()
-        if not auth or auth[0].lower() != b'token':
-            return None
-
-        if len(auth) == 1:
-            msg = 'Invalid token header. No credentials provided.'
-            raise exceptions.AuthenticationFailed(msg)
-        elif len(auth) > 2:
-            msg = 'Invalid token header'
-            raise exceptions.AuthenticationFailed(msg)
-
-        try:
-            token = auth[1]
-            if token=="null":
-                msg = 'Null token not allowed'
-                raise exceptions.AuthenticationFailed(msg)
-        except UnicodeError:
-            msg = 'Invalid token header. Token string should not contain invalid characters.'
-            raise exceptions.AuthenticationFailed(msg)
-
-        return self.authenticate_credentials(token)
-
-    def authenticate_credentials(self, token):
-        print("==========auto")
-        model = self.get_model()
-        payload = jwt.decode(token, "SECRET_KEY")
-        email = payload['email']
-        userid = payload['id']
-        msg = {'Error': "Token mismatch",'status' :"401"}
-        try:
-            
-            user = User.objects.get(
-                email=email,
-                id=userid,
-                is_active=True
-            )
-            
-            if not user.token['token'] == token:
-                raise exceptions.AuthenticationFailed(msg)
-               
-        except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:
-            return HttpResponse({'Error': "Token is invalid"}, status="403")
-        except User.DoesNotExist:
-            return HttpResponse({'Error': "Internal server error"}, status="500")
-
-        return (user, token)
-
-    def authenticate_header(self, request):
-        return 'Token'
-
-
-
-
-
-
-
-
-
-    
-    
 
 
 
