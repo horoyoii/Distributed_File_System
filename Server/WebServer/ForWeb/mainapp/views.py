@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseNotFound
 
 import jwt,json
 from django.conf import settings
@@ -184,10 +184,62 @@ class Login(APIView):
             )
 
 
+import mimetypes
+import os
+"""
+def get_downlaod(request):
+    #file_full_path = "/tmp/{0}".format(filename)
+    file_full_path = "C:\\Users\\user\\Desktop\\123.PNG"
+    print(file_full_path)
+
+    with open(file_full_path,'r') as f:
+        data = f.read()
+    print(data)
+
+    response = HttpResponse(data, content_type=mimetypes.guess_type(file_full_path)[0])
+    response['Content-Disposition'] = "attachment; filename={0}".format("hey")
+    response['Content-Length'] = os.path.getsize(file_full_path)
+    return response
+    #return HttpResponse("HI?")
+"""
+
+import mimetypes
+
+def get_downlaod(request, userid, filename):
+    ...
+
+    file_location = 'D:\\Sources\\SaaS\\Server\\WebServer\\ForWeb\\mainapp\\files\\aaa.mp4'
+    #print(mimetypes.guess_type(file_location))
+    print(userid)
+    print(filename)
 
 
+     # 'read byte mode인 경우 text, PNG, mp4 전송 가능
+    try:    
+        with open(file_location, 'rb') as f:
+           file_data = f.read()
 
+        # sending response 
+        response = HttpResponse(file_data, content_type=mimetypes.guess_type(file_location))
+        response['Content-Disposition'] = 'attachment; filename="aaa.mp4"'
 
+    except IOError:
+        # handle file not exist case here
+        response = HttpResponseNotFound('<h1>File not exist</h1>')
 
+    return response
 
+    # 'read byte mode인 경우 text, PNG 전송 가능
+    """
+    try:
+        print("ok")
+        with open(file_location, "rb") as f:
+            return HttpResponse(f.read(), content_type=mimetypes.guess_type(file_location))
+    except IOError:
+        print("called")
+        red = Image.new('RGBA', (1, 1), (255,0,0,0))
+        response = HttpResponse(content_type="image/PNG")
+        red.save(response, "PNG")
+        return response
+    """    
     
