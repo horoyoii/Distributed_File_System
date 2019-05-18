@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,8 +31,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.myapplication.APP.MyApplication;
+import com.example.myapplication.Model.UserLoginData;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -307,40 +316,70 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+            // TODO: register the new account here.
 
-
-
-
-
-
-
-
-
-
-
-            return true;
+            HashMap<String, Object> input = new HashMap<>();
+            input.put("username", mEmail);
+            ((MyApplication)getApplication()).setUserID(mEmail);
+            input.put("password", mPassword);
 
             /*
-            // TODO: attempt authentication against a network service.
+            call.execute() runs the request on the current thread.
+            call.enqueue(callback) runs the request on a background thread, and runs the callback on the current thread.
+            You generally don't want to run call.execute() on the main thread because it'll crash, but you also don't want to run call.enqueue() on a background thread.
 
+             */
+
+            // 동기적 처리
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                Response<UserLoginData> response = ((MyApplication) getApplication()).getRetrofitExService().getAuth(input).execute();
+                if(response.code() == 400){
+                    Log.d("HHH", "sss");
+                    return false;
                 }
+                if (response.isSuccessful()) {
+                    Log.d("HHH", "Success");
+                    UserLoginData body = response.body();
+                    if (body != null) {
+                        Log.d("HHH", body.getToken());
+                        //TODO : store the token in SharedPreference
+                        ((MyApplication)getApplication()).setJWT(body.getToken());
+                        return true;
+                    }
+                }
+
+            } catch (Exception e){
+                e.printStackTrace();
             }
 
-            // TODO: register the new account here.
-            return true;
+
+            // 비동기적 처리
+            /*
+            ((MyApplication)getApplication()).getRetrofitExService().getAuth(input).enqueue(new Callback<UserLoginData>() { // 비동기
+                @Override
+                public void onResponse(@NonNull Call<UserLoginData> call, @NonNull Response<UserLoginData> response) {
+                    if(response.code() == 400){
+                        Log.d("HHH", "sss");
+                    }
+                    if (response.isSuccessful()) {
+                        Log.d("HHH", "Success");
+                        UserLoginData body = response.body();
+                        if (body != null) {
+                            Log.d("HHH", body.getToken());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<UserLoginData> call, @NonNull Throwable t) {
+                    Log.d("HHH", "failed...");
+                    Log.d("HHH", t.toString());
+                }
+            });
             */
+
+            return false;
         }
 
         @Override
@@ -351,6 +390,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 Intent intent=new Intent(LoginActivity.this, MainActivity.class);
                 finish();
+
                 startActivity(intent);
 
             } else {

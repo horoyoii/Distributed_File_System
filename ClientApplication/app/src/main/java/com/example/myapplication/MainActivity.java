@@ -1,22 +1,15 @@
 package com.example.myapplication;
 
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.example.myapplication.APP.MyApplication;
+import com.example.myapplication.Model.FileLists;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
         RetrofitAPI retrofitExService = retrofit.create(RetrofitAPI.class);
 
-        retrofitExService.getData("eirc8260").enqueue(new Callback<List<FileLists>>() {
+        MyApplication app = (MyApplication)getApplication();
+
+        retrofitExService.getData(app.getUserID(), app.getJWT()).enqueue(new Callback<List<FileLists>>() {
             @Override
             public void onResponse(@NonNull Call<List<FileLists>> call, @NonNull Response<List<FileLists>> response) {
                 if (response.isSuccessful()) {
