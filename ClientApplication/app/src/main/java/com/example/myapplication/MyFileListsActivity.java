@@ -42,8 +42,6 @@ public class MyFileListsActivity extends AppCompatActivity implements AdapterVie
         app = (MyApplication)getApplication();
 
         getFileItemsFromServer();
-        //setListViewData();
-
 
 
 
@@ -91,7 +89,13 @@ public class MyFileListsActivity extends AppCompatActivity implements AdapterVie
         });
     }
 
+
+
     // 네트워크 응답 완료 시 호출되는 callback 함수
+    /*
+    1) 리스트뷰에 아이템을 추가한다.
+    2) 액션바에 총 아이템 수를 추가한다.
+     */
     private void setListViewData() { // 비동기적인 처리가 필요하다.
         Log.d("HHH", "called SetListView Data");
         mylistview = (ListView) findViewById(R.id.list);
@@ -99,6 +103,9 @@ public class MyFileListsActivity extends AppCompatActivity implements AdapterVie
         FileListAdapter adapter = new FileListAdapter(this, rowItems);
         mylistview.setAdapter(adapter);
         mylistview.setOnItemClickListener(this);
+
+        String action_title = "모든 파일 "+rowItems.size();
+        getSupportActionBar().setTitle(action_title);
     }
 
     @Override

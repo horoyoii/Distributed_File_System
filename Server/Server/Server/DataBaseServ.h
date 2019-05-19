@@ -44,7 +44,7 @@ private:
 	MYSQL_ROW row;
 	int Stat;
 
-
+	string file_table_name;
 
 	// =====
 	int itemCnt;

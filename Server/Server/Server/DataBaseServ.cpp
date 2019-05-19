@@ -20,6 +20,8 @@ DataBaseServ* DataBaseServ::getInstance() {
 
 
 DataBaseServ::DataBaseServ(){
+	file_table_name = "filelists";
+	
 	itemCnt = 0;
 	mysql_init(&Conn);
 	ConnPtr = mysql_real_connect(&Conn, "127.0.0.1", "root", "whdgus22", "mydb2", 3306, (char*)NULL, 0);
@@ -52,7 +54,7 @@ string DataBaseServ::QeuryUserInfo(string id){
 }
 
 void DataBaseServ::INSERT_FILE_INFO(string uid, string file_name, string last_update_time){
-	string Query = "INSERT INTO fileinfo VALUES (" + uid +", \'"+file_name +"\', \'"+last_update_time + "\')";
+	string Query = "INSERT INTO "+file_table_name+"(name, lastupdatetime, uid) VALUES (\'" + file_name +"\', \'"+last_update_time +"\', "+uid + ")";
 	Stat = mysql_query(ConnPtr, Query.c_str());
 
 	if (Stat != 0) {
@@ -64,7 +66,7 @@ void DataBaseServ::INSERT_FILE_INFO(string uid, string file_name, string last_up
 }
 
 void DataBaseServ::UPDATE_FILE_INFO(string uid, string file_name, string last_update_time){
-	string Query = "UPDATE fileinfo SET lastupdatetime = \'" +last_update_time +"\' WHERE uid = \'"+uid+"\' and name = \'"+file_name+"\'" ;
+	string Query = "UPDATE "+file_table_name+" SET lastupdatetime = \'" +last_update_time +"\' WHERE uid = \'"+uid+"\' and name = \'"+file_name+"\'" ;
 	Stat = mysql_query(ConnPtr, Query.c_str());
 
 	if (Stat != 0) {
@@ -91,7 +93,7 @@ void DataBaseServ::DELETES(){
 }
 
 int DataBaseServ::HowManyItem(string uid) {
-	string Query = "SELECT count(*) from fileinfo where uid = " + uid;
+	string Query = "SELECT count(*) from "+file_table_name+" where uid = " + uid;
 	Stat = mysql_query(ConnPtr, Query.c_str());
 
 	if (Stat != 0) {
@@ -130,7 +132,7 @@ string DataBaseServ::getUserUid(string userID){
 }
 
 void DataBaseServ::getAllItemInfo(ostream &requestStream, string uid ) {
-	string Query = "SELECT * from fileinfo where uid = " + uid;
+	string Query = "SELECT * from "+file_table_name+" where uid = " + uid;
 	Stat = mysql_query(ConnPtr, Query.c_str());
 
 	if (Stat != 0) {
