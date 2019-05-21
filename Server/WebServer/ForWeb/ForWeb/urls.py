@@ -67,6 +67,6 @@ urlpatterns = [
     path('hello', views.HelloView.as_view(), name='hello'),
     path('obtain_token', views.Login.as_view(), name='login'),
     
-    url(r'api/v2/users/(?P<userid>[\w\-]+)/filelists/(?P<filename>[0-9]+)/down/$', views.get_downlaod),
+    url(r'api/v2/users/(?P<userid>[\w\-]+)/filelists/(?P<filename>[a-zA-A.]+)', views.get_downlaod),
 
 ]

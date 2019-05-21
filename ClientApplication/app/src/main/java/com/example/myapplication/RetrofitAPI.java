@@ -6,6 +6,7 @@ import com.example.myapplication.Model.UserLoginData;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
@@ -13,9 +14,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 public interface RetrofitAPI {
-    String URL = "http://115.145.241.85:8000/";
+    String URL = "http://115.145.246.202:8000/";
     /**
      * GET 방식, URL/posts/{userId} 호출.
      * Data Type의 JSON을 통신을 통해 받음.
@@ -54,6 +56,9 @@ public interface RetrofitAPI {
      * @return 다수의 Data 객체를 JSON 형태로 반환.
      */
 
+
+    @GET("/api/v2/users/{userId}/filelists/{filename}")
+    Call<ResponseBody> fetchCaptcha(@Path("userId") String userId, @Path("filename") String filename);
 
 
 

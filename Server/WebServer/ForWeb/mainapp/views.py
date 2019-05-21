@@ -186,33 +186,12 @@ class Login(APIView):
 
 import mimetypes
 import os
-"""
-def get_downlaod(request):
-    #file_full_path = "/tmp/{0}".format(filename)
-    file_full_path = "C:\\Users\\user\\Desktop\\123.PNG"
-    print(file_full_path)
 
-    with open(file_full_path,'r') as f:
-        data = f.read()
-    print(data)
-
-    response = HttpResponse(data, content_type=mimetypes.guess_type(file_full_path)[0])
-    response['Content-Disposition'] = "attachment; filename={0}".format("hey")
-    response['Content-Length'] = os.path.getsize(file_full_path)
-    return response
-    #return HttpResponse("HI?")
-"""
-
-import mimetypes
-
+#@CustomAuthentificate
 def get_downlaod(request, userid, filename):
     ...
 
-    file_location = 'D:\\Sources\\SaaS\\Server\\WebServer\\ForWeb\\mainapp\\files\\aaa.mp4'
-    #print(mimetypes.guess_type(file_location))
-    print(userid)
-    print(filename)
-
+    file_location = 'D:\\Sources\\SaaS\\Server\\Server\\Server\\user\\'+userid+'\\'+filename
 
      # 'read byte mode인 경우 text, PNG, mp4 전송 가능
     try:    
@@ -221,7 +200,8 @@ def get_downlaod(request, userid, filename):
 
         # sending response 
         response = HttpResponse(file_data, content_type=mimetypes.guess_type(file_location))
-        response['Content-Disposition'] = 'attachment; filename="aaa.mp4"'
+        #response['Content-Disposition'] = 'attachment; filename="aaa.jpg"' # 
+        response['Content-Disposition'] = 'inline; filename="aaa.jpg"'      #
 
     except IOError:
         # handle file not exist case here

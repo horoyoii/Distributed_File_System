@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +22,7 @@ import com.example.myapplication.Model.FileLists;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,6 +35,7 @@ public class MyFileListsActivity extends AppCompatActivity implements AdapterVie
     String[] file_names;
     String[] file_update_dates;
 
+    int cnt=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,18 +71,17 @@ public class MyFileListsActivity extends AppCompatActivity implements AdapterVie
                         for (int i = 0; i < data.size(); i++) {
                             FileItem item = new FileItem(data.get(i).getName(),
                                     data.get(i).getLastupdatetime(),
-                                    R.drawable.cap,
                                     "txt");
                             rowItems.add(item);
                         }
 
-                        String result="";
                         for (int i = 0; i < data.size(); i++) {
                             Log.e("data" + i, data.get(i).getName() + "");
                         }
                     }
 
-                    setListViewData();
+                    for(int i=0;i<rowItems.size();i++)
+                        getFileImageFromServer(data.get(i).getName());
                 }
             }
 
@@ -88,6 +91,44 @@ public class MyFileListsActivity extends AppCompatActivity implements AdapterVie
             }
         });
     }
+
+
+    private void getFileImageFromServer(String filename){
+        // TODO: fetchCaptcha(app.getUserID(), filename); -> 이렇게 바뀌어야 한다. 썸네일 받아올때
+        Call<ResponseBody> call = ((MyApplication)getApplication()).getRetrofitExService().fetchCaptcha(app.getUserID(), "test.jpg");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("HHH", "onResponse called");
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.d("HHH", "success");
+                        // display the image data in a ImageView or save it
+                        Bitmap bmp = BitmapFactory.decodeStream(response.body().byteStream());
+                        rowItems.get(cnt).setFile_thumbnail(bmp);
+
+                    } else {
+                        // TODO
+                    }
+                } else {
+                    Log.d("HHH", "image down failed");
+                    // 유효한 이미지가 없으면 디폴트 이미지를 사용한다.
+                    // Bitmap _bit = BitmapFactory.decodeResource(getResources(), R.drawable.bbb);
+
+                }
+
+                cnt++;
+                if(cnt == rowItems.size())
+                    setListViewData();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // TODO
+            }
+        });
+    }
+
 
 
 
@@ -101,6 +142,7 @@ public class MyFileListsActivity extends AppCompatActivity implements AdapterVie
         mylistview = (ListView) findViewById(R.id.list);
 
         FileListAdapter adapter = new FileListAdapter(this, rowItems);
+
         mylistview.setAdapter(adapter);
         mylistview.setOnItemClickListener(this);
 
